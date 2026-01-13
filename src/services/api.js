@@ -292,7 +292,7 @@ export const reviewsAPI = {
   // Get all approved reviews (public)
   getAll: async () => {
     try {
-        const response = await api.get('/reviews');
+      const response = await api.get('/reviews');
       return response.data;
     } catch (error) {
       console.error('❌ Error fetching reviews:', error.response?.data || error.message);
@@ -381,6 +381,11 @@ export const reviewsAPI = {
 export const carouselAPI = {
   getAll: async () => {
     const res = await api.get('/carousel/slides');
+    return res.data;
+  },
+
+  getActive: async () => {
+    const res = await api.get('/carousel/slides'); // For public display
     return res.data;
   },
 

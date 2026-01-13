@@ -180,7 +180,6 @@ const AdminDashboard = () => {
                 setReviews([]);
             }
 
-            // Fetch carousel slides separately (doesn't break if it fails)
             await fetchCarouselSlides();
         } catch (error) {
             console.error('Failed to fetch dashboard data:', error);
@@ -189,21 +188,13 @@ const AdminDashboard = () => {
             setLoading(false);
         }
     };
-
     const fetchCarouselSlides = async () => {
         try {
-            const response = await fetch('/api/carousel/slides');
-
-            if (!response.ok) {
-                throw new Error('Carousel API failed');
-            }
-
-            const data = await response.json();
-
-            setCarouselSlides(Array.isArray(data?.slides) ? data.slides : []);
+            const response = await carouselAPI.getAll(); 
+            setCarouselSlides(Array.isArray(response?.slides) ? response.slides : []);
         } catch (error) {
             console.error('Failed to fetch carousel slides:', error);
-            setCarouselSlides([]); // ✅ fallback
+            setCarouselSlides([]);
         }
     };
 
