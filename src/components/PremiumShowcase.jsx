@@ -35,44 +35,43 @@ const PremiumShowcase = () => {
       const isTablet = window.innerWidth >= 576 && window.innerWidth < 1024;
 
       // Small Mobile (< 450px) - 2 columns, tighter spacing
-      if (isSmallMobile) {
-        return premiumProducts.map((_, i) => ({
-          top: `${10 + i * 120}px`,
-          left: i % 2 === 0 ? '3%' : '52%',
-          size: 'small',
-        }));
-      }
-
-      // Mobile (450px - 576px) - 2 columns
-      if (isMobile) {
-        return premiumProducts.map((_, i) => ({
-          top: `${15 + i * 140}px`,
-          left: i % 2 === 0 ? '5%' : '53%',
-          size: i % 3 === 0 ? 'medium' : 'small',
-        }));
-      }
-
       // Tablet (576px - 1024px) - 3 columns
       if (isTablet) {
         return premiumProducts.map((_, i) => {
           const row = Math.floor(i / 3);
           const col = i % 3;
           return {
-            top: `${8 + row * 45}%`,
+            top: `${8 + row * 35}%`, // REDUCED from 45 to 35
             left: `${4 + col * 32}%`,
             size: i % 2 === 0 ? 'medium' : 'small',
           };
         });
       }
 
+      // Mobile (450px - 576px) - 2 columns
+      if (isMobile) {
+        return premiumProducts.map((_, i) => ({
+          top: `${15 + i * 110}px`, // REDUCED from 140 to 110
+          left: i % 2 === 0 ? '5%' : '53%',
+          size: i % 3 === 0 ? 'medium' : 'small',
+        }));
+      }
+
+      // Small Mobile (< 450px) - 2 columns, tighter spacing
+      if (isSmallMobile) {
+        return premiumProducts.map((_, i) => ({
+          top: `${10 + i * 95}px`, // REDUCED from 120 to 95
+          left: i % 2 === 0 ? '3%' : '52%',
+          size: 'small',
+        }));
+      }
       // Desktop - 4-5 per row with varied positioning
       const desktopPositions = [];
-      let currentTop = 5;
-      
+
       for (let i = 0; i < 20; i++) {
         const row = Math.floor(i / 4);
         const col = i % 4;
-        
+
         // Vary the size for visual interest
         let size;
         if (i % 5 === 0 || i % 7 === 0) {
@@ -83,13 +82,13 @@ const PremiumShowcase = () => {
           size = 'small';
         }
 
-        // Create 4 columns with some offset variation
-        const leftPositions = [2, 24, 48, 72];
-        const topOffset = row * 40;
-        const randomOffset = (col % 2) * 2; // Slight vertical variation
+        // Create 4 columns with proper spacing to prevent overlap
+        const leftPositions = [2, 26, 45, 70];
+        const topOffset = row * 28; // REDUCED from 45 to 28
+        const randomOffset = (col % 2) * 1.5; // REDUCED from 2 to 1.5
 
         desktopPositions.push({
-          top: `${currentTop + topOffset + randomOffset}%`,
+          top: `${5 + topOffset + randomOffset}%`,
           left: `${leftPositions[col]}%`,
           size: size,
         });
@@ -321,7 +320,7 @@ const styles = {
   floatingContainer: {
     position: 'relative',
     width: '100%',
-    minHeight: 'auto',
+    minHeight: '190vh',
     padding: '40px 0',
   },
   productFloat: {
@@ -415,13 +414,39 @@ if (typeof document !== 'undefined') {
       box-shadow: 0 8px 30px rgba(61, 40, 23, 0.3);
     }
 
-    /* Small Mobile (< 450px) */
-    @media (max-width: 449px) {
+    /* Extra Small Mobile (< 375px) */
+    @media (max-width: 374px) {
+      [style*="title"] {
+        font-size: 28px !important;
+      }
+      [style*="subtitle"] {
+        font-size: 12px !important;
+      }
+      [style*="floatingContainer"] {
+        min-height: 600vh !important;
+      }
+      [style*="productName"] {
+        font-size: 14px !important;
+      }
+      [style*="priceTag"] {
+        font-size: 18px !important;
+      }
+      [style*="exploreBtn"] {
+        padding: 8px 18px !important;
+        font-size: 10px !important;
+      }
+    }
+
+    /* Small Mobile (375px - 449px) */
+    @media (min-width: 375px) and (max-width: 449px) {
       [style*="title"] {
         font-size: 32px !important;
       }
       [style*="subtitle"] {
         font-size: 13px !important;
+      }
+      [style*="floatingContainer"] {
+        min-height: 550vh !important;
       }
       [style*="productName"] {
         font-size: 16px !important;
@@ -447,6 +472,9 @@ if (typeof document !== 'undefined') {
       [style*="subtitle"] {
         font-size: 14px !important;
       }
+      [style*="floatingContainer"] {
+        min-height: 500vh !important;
+      }
       [style*="productName"] {
         font-size: 18px !important;
       }
@@ -460,8 +488,18 @@ if (typeof document !== 'undefined') {
       [style*="title"] {
         font-size: 48px !important;
       }
+      [style*="floatingContainer"] {
+        min-height: 400vh !important;
+      }
       [style*="productName"] {
         font-size: 20px !important;
+      }
+    }
+
+    /* Desktop (1024px+) */
+    @media (min-width: 1024px) {
+      [style*="floatingContainer"] {
+        min-height: 280vh !important;
       }
     }
   `;

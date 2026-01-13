@@ -64,7 +64,7 @@
 .featured-section {
   padding: 0 0;
   width: 100%;
-  transform: translateY(-5%);
+  transform: translateY(-1%);
 }
 
 .view-all {
@@ -213,6 +213,9 @@
     gap: 1rem;
     align-items: flex-start;
   }
+  .products-flex{
+    transform: translateY(2%);
+  }
 }
 
 @media (max-width: 576px) {
@@ -225,5 +228,20 @@
 
   .product-card {
     width: 180px;
+  }
+  .products-flex{
+    gap: 0.8rem;
+    transform: translateY(1.5%);
+  }
+}
+
+@media (max-width: 375px) {
+  .products-flex{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+    transform: translateY(1.5%);
   }
 }

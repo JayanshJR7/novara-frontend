@@ -24,7 +24,16 @@ const Home = () => {
     try {
       setLoading(true);
       const data = await productsAPI.getAll();
-      setFeaturedProducts(data.products.slice(0, 30));
+
+      const allProducts = data.products || [];
+
+      if (allProducts.length <= 40) {
+        setFeaturedProducts(allProducts);
+      } else {
+        const shuffled = [...allProducts].sort(() => 0.5 - Math.random());
+        setFeaturedProducts(shuffled.slice(0, 40));
+      }
+
     } catch (error) {
       console.error('Failed to fetch products:', error);
     } finally {
@@ -78,7 +87,7 @@ const Home = () => {
         <EndShowcase />
       </section>
       <section className='reviews-section'>
-          <ReviewsSection />
+        <ReviewsSection />
       </section>
       <Footer />
     </div>

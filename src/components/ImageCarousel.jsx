@@ -19,39 +19,39 @@ const HeroCarousel = () => {
   }, []);
 
   const fetchSlides = async () => {
-  try {
-    const { data } = await api.get('/carousel/slides');
+    try {
+      const { data } = await api.get('/carousel/slides');
 
-    if (data?.success && Array.isArray(data.slides) && data.slides.length > 0) {
-      setSlides(data.slides);
-    } else {
+      if (data?.success && Array.isArray(data.slides) && data.slides.length > 0) {
+        setSlides(data.slides);
+      } else {
+        setSlides(getFallbackSlides());
+      }
+    } catch (error) {
+      console.error('Failed to fetch slides:', error);
       setSlides(getFallbackSlides());
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error('Failed to fetch slides:', error);
-    setSlides(getFallbackSlides());
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
-const getFallbackSlides = () => ([
-  {
-    id: 1,
-    title: 'Exquisite Silver Collection',
-    subtitle: 'Discover timeless elegance crafted with precision'
-  },
-  {
-    id: 2,
-    title: 'Handcrafted Perfection',
-    subtitle: 'Each piece tells a story of artistry'
-  },
-  {
-    id: 3,
-    title: 'Wedding Special',
-    subtitle: 'Make your day unforgettable with our collection'
-  }
-]);
+  const getFallbackSlides = () => ([
+    {
+      id: 1,
+      title: 'Exquisite Silver Collection',
+      subtitle: 'Discover timeless elegance crafted with precision'
+    },
+    {
+      id: 2,
+      title: 'Handcrafted Perfection',
+      subtitle: 'Each piece tells a story of artistry'
+    },
+    {
+      id: 3,
+      title: 'Wedding Special',
+      subtitle: 'Make your day unforgettable with our collection'
+    }
+  ]);
 
 
   useEffect(() => {
@@ -198,9 +198,7 @@ const getFallbackSlides = () => ([
           onClick={prevSlide}
           disabled={isTransitioning}
         >
-          <div style={styles.controlInner}>
-            <FiChevronLeft style={styles.controlIcon} />
-          </div>
+          <FiChevronLeft style={styles.controlIcon} />
         </button>
 
         <button
@@ -208,10 +206,9 @@ const getFallbackSlides = () => ([
           onClick={nextSlide}
           disabled={isTransitioning}
         >
-          <div style={styles.controlInner}>
-            <FiChevronRight style={styles.controlIcon} />
-          </div>
+          <FiChevronRight style={styles.controlIcon} />
         </button>
+
 
         <div style={styles.dotsContainer}>
           <div style={styles.dotsWrapper}>
@@ -326,6 +323,23 @@ const getFallbackSlides = () => ([
           .cta-button {
             padding: 12px 24px !important;
             font-size: 0.9rem !important;
+          }
+        }
+        @media (max-width: 375px) {
+          .carousel-content h2 {
+            font-size: 2rem !important;
+            line-height: 1.2 !important;
+            max-width: 100% !important;
+            word-break: break-word;
+            text-align: left;
+          }
+
+          .carousel-content p {
+            font-size: 0.95rem !important;
+          }
+
+          .title {
+            font-size: 2rem !important;
           }
         }
       `}</style>
@@ -455,7 +469,7 @@ const styles = {
   },
   title: {
     fontFamily: "'Dancing Script', cursive",
-    fontSize: '5rem',
+    fontSize: '4rem',
     fontWeight: 700,
     color: '#fff',
     margin: '0 0 1.5rem 0',
@@ -546,7 +560,7 @@ const styles = {
     width: '60px',
     height: '60px',
     borderRadius: '50%',
-    background: 'rgba(255, 255, 255, 0.1)',
+    // background: 'rgba(255, 255, 255, 0.1)',
     backdropFilter: 'blur(10px)',
     border: '1px solid rgba(255, 255, 255, 0.2)',
     display: 'flex',
