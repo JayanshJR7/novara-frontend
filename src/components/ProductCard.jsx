@@ -4,7 +4,6 @@ import { FiHeart, FiShoppingBag } from 'react-icons/fi';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import './ProductCard.css';
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
 
 const ProductCard = ({ product }) => {
   const { addToCart, addToWishlist, isInWishlist } = useCart();
