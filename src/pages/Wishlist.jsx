@@ -6,6 +6,7 @@ import ProductCard from '../components/ProductCard';
 import { FiShoppingBag, FiArrowLeft, FiTrash2 } from 'react-icons/fi';
 import './Wishlist.css';
 import Navbar from '../components/Navbar';
+import { toast } from 'react-toastify';
 
 const Wishlist = () => {
   const { isAuthenticated } = useAuth();
@@ -22,9 +23,16 @@ const Wishlist = () => {
   const handleRemove = async (productId) => {
     try {
       await removeFromWishlist(productId);
+      toast.info('Item removed from wishlist', {
+        position: "top-right",
+        autoClose: 2000,
+      });
     } catch (error) {
       console.error('Failed to remove from wishlist:', error);
-      alert('Failed to remove item');
+      toast.error('Failed to remove item', {
+        position: "top-right",
+        autoClose: 3000,
+      });
     }
   };
 
@@ -37,9 +45,16 @@ const Wishlist = () => {
     try {
       setAddingToCartId(product._id);
       await addToCart(product._id, 1);
+      toast.success(`${product.itemname} added to cart!`, {
+        position: "top-right",
+        autoClose: 2000,
+      });
     } catch (error) {
       console.error('Failed to add to cart:', error);
-      alert('Failed to add to cart');
+      toast.error('Failed to add to cart. Please try again.', {
+        position: "top-right",
+        autoClose: 3000,
+      });
     } finally {
       setAddingToCartId(null);
     }

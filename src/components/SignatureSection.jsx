@@ -150,8 +150,8 @@ const SignatureSection = () => {
                 </div>
 
                 {/* Decorative quote */}
-                <div className={`signature-quote ${showText ? 'reveal' : ''}`}>
-                    "Crafting digital experiences, one line of code at a time"
+                <div className={`signature-quote ${showText ? 'reveal' : ''}`} style={{ color: '#300708' }}>
+                    "Manifestation is just engineering in progress."
                 </div>
             </div>
         </div>

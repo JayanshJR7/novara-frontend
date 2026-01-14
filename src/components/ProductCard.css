@@ -1,14 +1,13 @@
 /* Product Card */
 .product-card {
-  width: 250px;
-  max-width: 100%;
-  flex-shrink: 0;
+  width: 290px;
   background: white;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
   cursor: pointer;
+  position: relative;
 }
 
 
@@ -24,19 +23,21 @@
 }
 
 /* Product Image */
+
 .product-image {
-  position: relative;
   width: 100%;
-  height: 270px;
+  height: 280px; /* Reduced from 320px */
   overflow: hidden;
-  background: #f5f5f5;
+  position: relative;
+  background-color: #f5f5f5;
 }
+
 
 .product-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform 0.3s ease;
 }
 
 .product-card:hover .product-image img {
@@ -95,21 +96,25 @@
 
 /* Product Info */
 .product-info {
-  padding: 1.5rem;
+  padding: 0.8rem; /* Reduced from 1rem */
 }
 
 .product-name {
-  font-size: 1.1rem;
+  font-size: 1rem; /* Reduced from 1.1rem */
+  font-weight: 600;
   color: #1a1a1a;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
+  margin-bottom: 0.3rem; /* Reduced from 0.5rem */
+  line-height: 1.3;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .product-code {
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   color: #999;
   margin-bottom: 0.5rem;
 }
@@ -140,6 +145,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 0.3rem; /* Reduced from 0.5rem */
 }
 
 .out-of-stock {
@@ -179,7 +185,7 @@
   }
 
   .product-price {
-    font-size: 1.1rem;
+    font-size: 0.8rem;
   }
 
   .out-of-stock {
@@ -218,7 +224,7 @@
   }
 
   .product-price {
-    font-size: 1rem;
+    font-size: 0.8rem;
   }
 
   .dabba {
@@ -228,5 +234,208 @@
   .out-of-stock {
     font-size: 0.6rem;
     padding: 0.2rem 0.35rem;
+  }
+}
+
+/* Tablets and small laptops - 768px */
+@media (max-width: 768px) {
+  .product-card {
+    width: 220px;
+  }
+
+  .product-image {
+    height: 220px; /* Reduced proportionally */
+  }
+
+  .product-info {
+    padding: 0.7rem;
+  }
+
+  .product-name {
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .product-code {
+    font-size: 0.75rem;
+  }
+  
+  .product-price {
+    font-size: 1rem;
+  }
+
+  .original-price {
+    font-size: 0.8rem;
+  }
+
+  .discount-badge {
+    font-size: 0.6rem;
+    padding: 2px 4px;
+  }
+  
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* Large phones - 576px */
+@media (max-width: 576px) {
+  .product-card {
+    width: 165px;
+  }
+
+  .product-image {
+    height: 165px; /* Square ratio for mobile */
+  }
+
+  .product-info {
+    padding: 0.6rem;
+  }
+
+  .product-name {
+    font-size: 0.85rem;
+    line-height: 1.2;
+    margin-bottom: 0.2rem;
+    -webkit-line-clamp: 2; /* Max 2 lines */
+    line-clamp: 2;
+  }
+  
+  .product-code {
+    font-size: 0.7rem;
+  }
+
+  .out-of-stock {
+    font-size: 0.65rem;
+  }
+  
+  .product-price {
+    font-size: 0.4rem;
+  }
+
+  .original-price {
+    font-size: 0.75rem;
+  }
+
+  .discount-badge {
+    font-size: 0.55rem;
+    padding: 1px 4px;
+  }
+  
+  .icon-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .card-overlay {
+    gap: 0.8rem;
+  }
+}
+
+/* Small phones - 400px */
+@media (max-width: 400px) {
+  .product-card {
+    width: 155px;
+  }
+
+  .product-image {
+    height: 155px;
+  }
+
+  .product-info {
+    padding: 0.5rem;
+  }
+
+  .product-name {
+    font-size: 0.8rem;
+    line-height: 1.2;
+    margin-bottom: 0.15rem;
+  }
+  
+  .dabba {
+    margin-bottom: 0.2rem;
+  }
+
+  .product-code {
+    font-size: 0.65rem;
+  }
+
+  .out-of-stock {
+    font-size: 0.6rem;
+  }
+  
+  .product-price {
+    font-size: 0.85rem;
+  }
+
+  .original-price {
+    font-size: 0.7rem;
+  }
+
+  .discount-badge {
+    font-size: 0.5rem;
+    padding: 1px 3px;
+  }
+  
+  .icon-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 0.85rem;
+  }
+
+  .card-overlay {
+    gap: 0.6rem;
+  }
+}
+
+/* Ultra small phones - 360px (Samsung S23, etc) */
+@media (max-width: 360px) {
+  .product-card {
+    width: 145px;
+  }
+
+  .product-image {
+    height: 145px;
+  }
+
+  .product-info {
+    padding: 0.45rem;
+  }
+
+  .product-name {
+    font-size: 0.75rem;
+    line-height: 1.15;
+    margin-bottom: 0.1rem;
+  }
+
+  .product-code {
+    font-size: 0.6rem;
+  }
+
+  .out-of-stock {
+    font-size: 0.55rem;
+  }
+  
+  .product-price {
+    font-size: 0.5rem;
+  }
+
+  .original-price {
+    font-size: 0.65rem;
+  }
+
+  .discount-badge {
+    font-size: 0.48rem;
+    padding: 1px 3px;
+  }
+  
+  .icon-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
+
+  .card-overlay {
+    gap: 0.5rem;
   }
 }

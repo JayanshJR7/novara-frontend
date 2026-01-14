@@ -20,7 +20,7 @@ const Home = () => {
     setTimeout(() => setHomeAnimReady(true), 100);
   }, []);
 
-  const fetchFeaturedProducts = async () => {
+  const fetchFeaturedProducts = async () => { 
     try {
       setLoading(true);
       const data = await productsAPI.getAll();

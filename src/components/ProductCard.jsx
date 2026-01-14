@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiHeart, FiShoppingBag } from 'react-icons/fi';
+import { toast } from 'react-toastify';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import './ProductCard.css';
 
 const ProductCard = ({ product }) => {
-  const { addToCart, addToWishlist, isInWishlist } = useCart();
+  const { addToCart, addToWishlist, isInWishlist, removeFromWishlist } = useCart();
   const { isAuthenticated } = useAuth();
   const [addingToCart, setAddingToCart] = useState(false);
   const [addingToWishlist, setAddingToWishlist] = useState(false);
@@ -18,7 +19,10 @@ const ProductCard = ({ product }) => {
     e.stopPropagation();
 
     if (!isAuthenticated) {
-      alert('Please login to add items to cart');
+      toast.warning('Please login to add items to cart', {
+        position: "top-right",
+        autoClose: 3000,
+      });
       navigate('/login');
       return;
     }
@@ -26,9 +30,16 @@ const ProductCard = ({ product }) => {
     try {
       setAddingToCart(true);
       await addToCart(product._id, 1);
+      toast.success(`${product.itemname} added to cart!`, {
+        position: "top-right",
+        autoClose: 2000,
+      });
     } catch (error) {
       console.error('Failed to add to cart:', error);
-      alert('Failed to add to cart. Please try again.');
+      toast.error('Failed to add to cart. Please try again.', {
+        position: "top-right",
+        autoClose: 3000,
+      });
     } finally {
       setAddingToCart(false);
     }
@@ -39,17 +50,38 @@ const ProductCard = ({ product }) => {
     e.stopPropagation();
 
     if (!isAuthenticated) {
-      alert('Please login to add items to wishlist');
+      toast.warning('Please login to add items to wishlist', {
+        position: "top-right",
+        autoClose: 3000,
+      });
       navigate('/login');
       return;
     }
 
+    const inWishlist = isInWishlist(product._id);
+
     try {
       setAddingToWishlist(true);
-      await addToWishlist(product._id);
+      
+      if (inWishlist) {
+        await removeFromWishlist(product._id);
+        toast.info(`${product.itemname} removed from wishlist`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      } else {
+        await addToWishlist(product._id);
+        toast.success(`${product.itemname} added to wishlist!`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      }
     } catch (error) {
-      console.error('Failed to add to wishlist:', error);
-      alert('Failed to add to wishlist. Please try again.');
+      console.error('Failed to update wishlist:', error);
+      toast.error('Failed to update wishlist. Please try again.', {
+        position: "top-right",
+        autoClose: 3000,
+      });
     } finally {
       setAddingToWishlist(false);
     }
@@ -58,6 +90,7 @@ const ProductCard = ({ product }) => {
   if (!product || !product._id) {
     return null;
   }
+  
   const price = product.finalPrice || 0;
   const inWishlist = isInWishlist(product._id);
 

@@ -4,15 +4,16 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { productsAPI } from '../services/api';
+import { toast } from 'react-toastify';
 import './TrendingShowcase.css';
 
 const TrendingShowcase = () => {
     const [hoveredId, setHoveredId] = useState(null);
     const [trendingProducts, setTrendingProducts] = useState([]);
     const [loading, setLoading] = useState(true);
-    const { addToCart, addToWishlist, isInWishlist } = useCart();
+    const { addToCart, addToWishlist, isInWishlist, removeFromWishlist } = useCart();
     const { isAuthenticated } = useAuth();
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchTrendingProducts();
@@ -36,34 +37,67 @@ const TrendingShowcase = () => {
         e.stopPropagation();
 
         if (!isAuthenticated) {
-            alert('Please login to add items to cart');
+            toast.warning('Please login to add items to cart', {
+                position: "top-right",
+                autoClose: 3000,
+            });
             navigate('/login');
-            return;
+            return; // ⭐ RETURN add kiya
         }
 
         try {
             await addToCart(product._id, 1);
+            toast.success(`${product.itemname} added to cart!`, {
+                position: "top-right",
+                autoClose: 2000,
+            });
         } catch (error) {
             console.error('Failed to add to cart:', error);
-            alert('Failed to add to cart. Please try again.');
+            toast.error('Failed to add to cart. Please try again.', {
+                position: "top-right",
+                autoClose: 3000,
+            });
         }
     };
 
+    // ⭐ YE PURA FUNCTION UPDATE KIYA - TOGGLE FUNCTIONALITY KE SAATH
     const handleAddToWishlist = async (e, product) => {
         e.preventDefault();
         e.stopPropagation();
 
         if (!isAuthenticated) {
-            alert('Please login to add items to wishlist');
+            toast.warning('Please login to add items to wishlist', {
+                position: "top-right",
+                autoClose: 3000,
+            });
             navigate('/login');
-            return;
+            return; // ⭐ RETURN add kiya
         }
 
+        const inWishlist = isInWishlist(product._id);
+
         try {
-            await addToWishlist(product._id);
+            if (inWishlist) {
+                // Remove from wishlist
+                await removeFromWishlist(product._id);
+                toast.info(`${product.itemname} removed from wishlist`, {
+                    position: "top-right",
+                    autoClose: 2000,
+                });
+            } else {
+                // Add to wishlist
+                await addToWishlist(product._id);
+                toast.success(`${product.itemname} added to wishlist!`, {
+                    position: "top-right",
+                    autoClose: 2000,
+                });
+            }
         } catch (error) {
-            console.error('Failed to add to wishlist:', error);
-            alert('Failed to add to wishlist. Please try again.');
+            console.error('Failed to update wishlist:', error);
+            toast.error('Failed to update wishlist. Please try again.', {
+                position: "top-right",
+                autoClose: 3000,
+            });
         }
     };
 

@@ -5,6 +5,9 @@ import { useAuth } from '../context/AuthContext';
 import { FiTrash2, FiMinus, FiPlus } from 'react-icons/fi';
 import './Cart.css';
 import Navbar from '../components/Navbar';
+import { toast } from 'react-toastify';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const Cart = () => {
   const { isAuthenticated } = useAuth();
@@ -32,14 +35,16 @@ const Cart = () => {
 
     try {
       await updateCartItem(productId, newQuantity);
+      toast.success('Quantity updated', {
+        position: "top-right",
+        autoClose: 1500,
+      });
     } catch (error) {
-      console.error('=== UPDATE FAILED ===');
-      console.error('Error:', error);
-      console.error('Error response:', error.response);
-      console.error('Error data:', error.response?.data);
-      console.error('Error status:', error.response?.status);
-      console.error('====================');
-      alert('Failed to update quantity. Please try again.');
+      console.error('Failed to update quantity:', error);
+      toast.error('Failed to update quantity. Please try again.', {
+        position: "top-right",
+        autoClose: 1000,
+      });
     }
   };
 
@@ -49,21 +54,49 @@ const Cart = () => {
 
     try {
       await removeFromCart(productId);
+      toast.info('Item removed from cart', {
+        position: "top-right",
+        autoClose: 2000,
+      });
     } catch (error) {
       console.error('Failed to remove item:', error);
-      alert('Failed to remove item. Please try again.');
+      toast.error('Failed to remove item. Please try again.', {
+        position: "top-right",
+        autoClose: 3000,
+      });
     }
   };
 
   const handleClearCart = async (e) => {
     e.preventDefault();
-    if (window.confirm('Are you sure you want to clear your cart?')) {
-      try {
-        await clearCart();
-      } catch (error) {
-        alert('Failed to clear cart');
-      }
-    }
+
+    confirmAlert({
+      title: 'Clear Cart',
+      message: 'Are you sure you want to clear your entire cart?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: async () => {
+            try {
+              await clearCart();
+              toast.success('Cart cleared successfully', {
+                position: "top-right",
+                autoClose: 2000,
+              });
+            } catch (error) {
+              toast.error('Failed to clear cart. Please try again.', {
+                position: "top-right",
+                autoClose: 3000,
+              });
+            }
+          }
+        },
+        {
+          label: 'No',
+          onClick: () => { } // Do nothing
+        }
+      ]
+    });
   };
 
   const handleCheckout = () => {

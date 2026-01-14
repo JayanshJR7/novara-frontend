@@ -22,6 +22,8 @@ import ContactUs from './pages/ContactUs';
 import TermsConditions from './pages/TermsCondition';
 import ReturnPolicy from './pages/ReturnPolicy'
 import Careguide from './pages/Careguide';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -51,7 +53,7 @@ function App() {
   return (
     <>
       {isLoading && isInitialLoad && <NovaraLoader />}
-      
+
       <Router>
         <AuthProvider>
           <CartProvider>
@@ -80,6 +82,18 @@ function App() {
                 </Routes>
               </main>
             </div>
+            <ToastContainer
+              position="top-right"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+            />
           </CartProvider>
         </AuthProvider>
       </Router>
