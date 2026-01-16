@@ -5,8 +5,10 @@ import { useCart } from '../context/CartContext';
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
-import { FiShoppingBag, FiHeart, FiUser } from 'react-icons/fi';
-import { productsAPI, categoriesAPI } from '../services/api';
+import { FiShoppingBag, FiHeart, FiUser, FiSearch } from 'react-icons/fi';
+import { categoriesAPI } from '../services/api';
+import SearchBar from './Searchbar';
+
 import './Navbar.css';
 
 const Navbar = () => {
@@ -84,7 +86,6 @@ const Navbar = () => {
           ease: "power2.inOut",
           force3D: true
         });
-        // Close extension when scrolling down
         if (isExtensionOpen) {
           handleExtensionClose();
         }
@@ -243,6 +244,7 @@ const Navbar = () => {
           </div>
 
           <div className="navbar-center">
+            <SearchBar />
             <ul className="categories-list">
               {categories.map((category, index) => (
                 <li key={index}
@@ -312,6 +314,11 @@ const Navbar = () => {
 
         {isMobileMenuOpen && (
           <div className="mobile-menu" ref={mobileMenuRef}>
+            {/* Mobile Search - First Item */}
+            <div className="mobile-search-wrapper">
+              <SearchBar />
+            </div>
+
             {[...categories, ...extraCategories].map((category, index) => (
               <Link
                 key={index}

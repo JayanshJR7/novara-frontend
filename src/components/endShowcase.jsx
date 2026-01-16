@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { productsAPI } from '../services/api';
 import { useNavigate } from 'react-router-dom';
+
 const JewelryShowcase = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -38,12 +39,10 @@ const JewelryShowcase = () => {
       setLoading(true);
       const data = await productsAPI.getAll();
 
-      // Get all products (limit to 30)
       const productsData = data.products.slice(0, 30);
       setProducts(productsData);
       setFilteredProducts(productsData);
 
-      // Extract unique categories
       const uniqueCategories = [...new Set(data.products.map(p => p.category))];
       const categoryList = uniqueCategories.map((cat, index) => ({
         id: cat,
@@ -51,7 +50,6 @@ const JewelryShowcase = () => {
         icon: categoryIcons[index % categoryIcons.length]
       }));
 
-      // Add "All Treasures" at the beginning
       setCategories([
         { id: 'all', label: 'All Treasures', icon: '✦' },
         ...categoryList
@@ -131,7 +129,7 @@ const JewelryShowcase = () => {
       </div>
 
       {/* Category Filter */}
-      <div style={styles.categoryWrapper}>
+      <div style={styles.categoryWrapper} className="category-wrapper-mobile">
         <div style={styles.categoryContainer}>
           {categories.map((cat, idx) => (
             <button
@@ -171,20 +169,17 @@ const JewelryShowcase = () => {
               onMouseLeave={() => setHoveredId(null)}
               onClick={() => handleProductClick(product._id)}
             >
-              {/* Floating Frame */}
               <div style={{
                 ...styles.floatingFrame,
                 boxShadow: isHovered
                   ? '0 20px 60px rgba(48, 7, 8, 0.25), 0 0 0 1px rgba(48, 7, 8, 0.1)'
                   : '0 4px 20px rgba(0,0,0,0.08)',
               }}>
-                {/* Hover Border Glow */}
                 <div style={{
                   ...styles.glowBorder,
                   opacity: isHovered ? 1 : 0,
                 }}></div>
 
-                {/* Image Container */}
                 <div style={styles.imageContainer}>
                   <img
                     src={getImage(product)}
@@ -197,10 +192,8 @@ const JewelryShowcase = () => {
                     }}
                   />
 
-                  {/* Gradient Veil */}
                   <div style={styles.gradientVeil}></div>
 
-                  {/* Floating Badge */}
                   <div
                     className="floating-badge"
                     style={{
@@ -212,7 +205,6 @@ const JewelryShowcase = () => {
                   </div>
                 </div>
 
-                {/* Product Info - Enhanced */}
                 <div style={styles.productInfo}>
                   <h3 style={{
                     ...styles.productName,
@@ -228,7 +220,6 @@ const JewelryShowcase = () => {
                       }}>{formatPrice(product)}</span>
                     </div>
 
-                    {/* Hover Arrow Indicator */}
                     <div
                       className="arrow-indicator"
                       style={{
@@ -253,6 +244,16 @@ const JewelryShowcase = () => {
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap');
+
+        /* Hide scrollbar for category wrapper */
+        .category-wrapper-mobile {
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+        }
+
+        .category-wrapper-mobile::-webkit-scrollbar {
+          display: none;
+        }
 
         @keyframes fadeInUp {
           from {
@@ -335,6 +336,23 @@ const JewelryShowcase = () => {
           }
           .category-btn:hover {
             transform: translateY(-2px);
+          }
+        }
+
+        /* Tablet responsive */
+        @media (max-width: 768px) {
+          .category-wrapper-mobile {
+            padding-left: 16px !important;
+            padding-right: 16px !important;
+          }
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 576px) {
+          .category-wrapper-mobile {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+            margin-bottom: 40px !important;
           }
         }
       `}</style>
@@ -455,18 +473,21 @@ const styles = {
   },
   categoryWrapper: {
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     marginBottom: '60px',
     overflowX: 'auto',
     WebkitOverflowScrolling: 'touch',
     scrollbarWidth: 'none',
     msOverflowStyle: 'none',
+    paddingLeft: '20px',
+    paddingRight: '20px',
   },
   categoryContainer: {
     display: 'flex',
     gap: '12px',
-    padding: '0 20px',
+    padding: '0',
     minWidth: 'min-content',
+    flexWrap: 'nowrap',
   },
   categoryBtn: {
     position: 'relative',
@@ -510,7 +531,7 @@ const styles = {
     background: '#fff',
     animation: 'expandWidth 0.4s ease',
   },
-    productsGrid: {
+  productsGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
     gap: '24px',
@@ -518,7 +539,6 @@ const styles = {
     margin: '0 auto',
     padding: '0 16px',
   },
-
   productCard: {
     animation: 'fadeInUp 0.8s ease forwards',
     opacity: 0,
@@ -548,18 +568,6 @@ const styles = {
     transition: 'opacity 0.5s ease',
     zIndex: 5,
   },
-  corner: {
-    position: 'absolute',
-    fontSize: '20px',
-    color: '#8B4513',
-    zIndex: 10,
-    opacity: 0.4,
-    transition: 'all 0.3s ease',
-  },
-  cornerTL: { top: '12px', left: '12px' },
-  cornerTR: { top: '12px', right: '12px' },
-  cornerBL: { bottom: '12px', left: '12px' },
-  cornerBR: { bottom: '12px', right: '12px' },
   imageContainer: {
     position: 'relative',
     width: '100%',
@@ -632,6 +640,7 @@ const styles = {
     WebkitLineClamp: 2,
     WebkitBoxOrient: 'vertical',
     overflow: 'hidden',
+    transition: 'transform 0.3s ease',
   },
   priceContainer: {
     display: 'flex',
@@ -666,18 +675,6 @@ const styles = {
     fontSize: '16px',
     fontWeight: 700,
   },
-  hoverInfoBar: {
-    display: 'none',
-  },
-  hoverDetails: {
-    display: 'none',
-  },
-  viewDetailsText: {
-    display: 'none',
-  },
-  arrowCircle: {
-    display: 'none',
-  },
   footer: {
     textAlign: 'center',
     marginTop: '80px',
@@ -689,72 +686,6 @@ const styles = {
     color: '#8B4513',
     opacity: 0.5,
     animation: 'pulse 3s ease-in-out infinite',
-  },
-  '@media(max-width: 576px)': {
-    productsGrid: {
-      gridTemplateColumns: 'repeat(2, 1fr)',
-    },
-    productCard: {
-      maxWidth: '220px',
-    },
-    floatingFrame: {
-      borderRadius: '10px',
-    },
-    corner: {
-      fontSize: '16px',
-    },
-    cornerTL: { top: '8px', left: '8px' },
-    cornerTR: { top: '8px', right: '8px' },
-    cornerBL: { bottom: '8px', left: '8px' },
-    cornerBR: { bottom: '8px', right: '8px' },
-    imageContainer: {
-      paddingTop: '100%',
-    },
-    productImage: {
-      transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-    },
-    floatingBadge: {
-      width: '60px',
-      height: '60px',
-    },
-    badgeInner: {
-      fontSize: '12px',
-    },
-    shimmer: {
-      animation: 'shimmerSlide 2s ease-in-out',
-    },
-    gradientVeil: {
-      height: '40%',
-    },
-    productInfo: {
-      padding: '16px 12px',
-    },
-    productName: {
-      fontSize: '18px',
-    },
-    priceContainer: {
-      gap: '6px',
-    },
-    priceLabel: {
-      fontSize: '10px',
-    },
-    price: {
-      fontSize: '16px',
-    },
-    arrowIndicator: {
-      width: '28px',
-      height: '28px',
-    },
-    arrowIcon: {
-      fontSize: '14px',
-    },
-    footer: {
-      marginTop: '60px',
-      paddingTop: '30px',
-    },
-    footerOrnament: {
-      fontSize: '18px',
-    },
   },
 };
 

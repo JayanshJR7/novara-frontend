@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { productsAPI } from '../services/api';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { FiHeart, FiShoppingBag, FiArrowLeft } from 'react-icons/fi';
+import { FiHeart, FiShoppingBag, FiArrowLeft, FiX, FiMaximize2 } from 'react-icons/fi';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
@@ -15,6 +15,8 @@ const ProductDetail = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+  const [showZoomModal, setShowZoomModal] = useState(false);
+  const [backgroundPosition, setBackgroundPosition] = useState('center');
 
   useEffect(() => {
     fetchProduct();
@@ -47,11 +49,21 @@ const ProductDetail = () => {
   const incrementQuantity = () => setQuantity(prev => prev + 1);
   const decrementQuantity = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
 
+  const handleMouseMove = (e) => {
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - left) / width) * 100;
+    const y = ((e.clientY - top) / height) * 100;
+    setBackgroundPosition(`${x}% ${y}%`);
+  };
+
   if (loading) {
     return (
       <div className="product-detail-page">
         <div className="container">
-          <div className="loading">Loading product...</div>
+          <div className="loading-state">
+            <div className="spinner-circle"></div>
+            <p>Loading...</p>
+          </div>
         </div>
       </div>
     );
@@ -61,10 +73,12 @@ const ProductDetail = () => {
     return (
       <div className="product-detail-page">
         <div className="container">
-          <div className="error">Product not found</div>
-          <button onClick={() => navigate('/products')} className="back-btn">
-            <FiArrowLeft /> Back to Products
-          </button>
+          <div className="error-state">
+            <h2>Product Not Found</h2>
+            <button onClick={() => navigate('/products')} className="btn-back-error">
+              <FiArrowLeft /> Back to Products
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -74,83 +88,121 @@ const ProductDetail = () => {
     <div className="product-detail-page">
       <div className="container">
 
-        {/* Back Button */}
-        <button onClick={() => navigate(-1)} className="back-btn">
+        <button onClick={() => navigate(-1)} className="btn-back">
           <FiArrowLeft /> Back
         </button>
 
-        {/* Product Detail Grid */}
-        <div className="product-detail-grid">
+        <div className="product-grid">
 
-          {/* Left: Image */}
-          <div className="product-image-section">
-            <img src={product.itemImage} alt={product.itemname} />
+          {/* Image Section with Real Zoom */}
+          <div className="image-section">
+            <div className="image-main-wrapper">
+              <div 
+                className="image-zoom-container"
+                onMouseMove={handleMouseMove}
+                onMouseLeave={() => setBackgroundPosition('center')}
+              >
+                <img 
+                  src={product.itemImage} 
+                  alt={product.itemname}
+                  className="product-image"
+                />
+                <div 
+                  className="zoomed-overlay"
+                  style={{
+                    backgroundImage: `url(${product.itemImage})`,
+                    backgroundPosition: backgroundPosition
+                  }}
+                />
+              </div>
+              <button 
+                className="btn-fullscreen"
+                onClick={() => setShowZoomModal(true)}
+              >
+                <FiMaximize2 /> View Full Size
+              </button>
+            </div>
           </div>
 
-          {/* Right: Details */}
-          <div className="product-info-section">
-
-            <div className="product-category">{product.category}</div>
-
-            <h1 className="product-title">{product.itemname}</h1>
-
-            <p className="product-code">Product Code: {product.itemCode}</p>
-            <div className="product-price-section">
-              <div className="original-price-large">₹{product.basePrice?.toFixed(2)}</div>
-              <div className="final-price-large">₹{product.finalPrice?.toFixed(2)}</div>
-              <span className="discount-badge-large">10% OFF</span>
+          {/* Product Details */}
+          <div className="details-section">
+            
+            <div className="product-meta">
+              <span className="category-tag">{product.category}</span>
+              <span className="product-sku">SKU: {product.itemCode}</span>
             </div>
-            {/* Description */}
+            
+            <h1 className="product-name">{product.itemname}</h1>
+            
+            <div className="price-container">
+              <div className="prices">
+                <span className="price-original">₹{product.basePrice?.toFixed(2)}</span>
+                <span className="price-current">₹{product.finalPrice?.toFixed(2)}</span>
+              </div>
+            </div>
+
             {product.description && (
-              <div className="product-description">
-                <h3 className='font-color'>Description</h3>
+              <div className="product-desc">
+                <h3>Description</h3>
                 <p>{product.description}</p>
               </div>
             )}
 
-            {/* Stock Status */}
-            <div className="stock-status">
+            <div className="stock-info">
               {product.inStock ? (
-                <span className="in-stock">In Stock</span>
+                <div className="stock-available">
+                  <span className="stock-dot"></span>
+                  In Stock
+                </div>
               ) : (
-                <span className="out-of-stock">Out of Stock</span>
+                <div className="stock-unavailable">
+                  <span className="stock-dot"></span>
+                  Out of Stock
+                </div>
               )}
             </div>
 
-            {/* Quantity Selector */}
             {product.inStock && (
-              <div className="quantity-selector">
+              <div className="quantity-section">
                 <label>Quantity:</label>
-                <div className="quantity-controls">
-                  <button onClick={decrementQuantity}>-</button>
-                  <span className="quantity">{quantity}</span>
+                <div className="quantity-box">
+                  <button onClick={decrementQuantity}>−</button>
+                  <span>{quantity}</span>
                   <button onClick={incrementQuantity}>+</button>
                 </div>
               </div>
             )}
 
-            {/* Action Buttons */}
-            <div className="product-actions">
+            <div className="action-buttons">
               <button
-                className="btn-add-cart"
+                className="btn-cart"
                 onClick={handleAddToCart}
                 disabled={!product.inStock}
               >
-                <FiShoppingBag /> Add to Your Bag
+                <FiShoppingBag />
+                Add to Bag
               </button>
 
               <button
-                className="btn-wishlist"
+                className={`btn-wishlist ${isInWishlist(product._id) ? 'active' : ''}`}
                 onClick={handleAddToWishlist}
               >
-                <FiHeart className={isInWishlist(product._id) ? 'active' : ''} />
-                {isInWishlist(product._id) ? 'In Wishlist' : 'Add to Wishlist'}
+                <FiHeart />
               </button>
             </div>
-
           </div>
         </div>
       </div>
+
+      {/* Fullscreen Zoom Modal */}
+      {showZoomModal && (
+        <div className="fullscreen-modal" onClick={() => setShowZoomModal(false)}>
+          <button className="modal-close">
+            <FiX size={28} />
+          </button>
+          <img src={product.itemImage} alt={product.itemname} />
+        </div>
+      )}
     </div>
   );
 };

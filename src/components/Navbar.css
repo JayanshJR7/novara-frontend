@@ -49,6 +49,7 @@
   max-width: max-content;
   align-items: center;
   justify-content: center;
+  gap: 1rem;
   height: 50%;
   padding: 0.2rem 3rem;
 
@@ -61,6 +62,38 @@
     inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 
   border-radius: 999px;
+}
+
+/* Mobile Search Styling */
+.mobile-search-wrapper {
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+  background: #f9f9f9;
+}
+
+.mobile-search-wrapper .search-trigger {
+  width: 100%;
+  padding: 12px 16px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.mobile-search-wrapper .search-trigger:hover {
+  border-color: #333;
+  background: #fafafa;
+}
+
+.mobile-search-wrapper .search-trigger svg {
+  width: 18px;
+  height: 18px;
 }
 
 .categories-list {
@@ -84,9 +117,7 @@
   color: #300708;
   font-size: 1rem;
   filter:
-    drop-shadow(0 0 6px rgba(255, 255, 255, 0.7)) 
-    drop-shadow(0 0 14px rgba(255, 255, 255, 0.45)) 
-    drop-shadow(0 0 24px rgba(255, 255, 255, 0.25));
+    drop-shadow(0 0 6px rgba(255, 255, 255, 0.7)) drop-shadow(0 0 14px rgba(255, 255, 255, 0.45)) drop-shadow(0 0 24px rgba(255, 255, 255, 0.25));
 }
 
 .navbar-right {
@@ -120,9 +151,7 @@
 .icon-link:hover {
   color: #300708;
   filter:
-    drop-shadow(0 0 6px rgba(255, 255, 255, 0.7)) 
-    drop-shadow(0 0 14px rgba(255, 255, 255, 0.45)) 
-    drop-shadow(0 0 24px rgba(255, 255, 255, 0.25));
+    drop-shadow(0 0 6px rgba(255, 255, 255, 0.7)) drop-shadow(0 0 14px rgba(255, 255, 255, 0.45)) drop-shadow(0 0 24px rgba(255, 255, 255, 0.25));
   transform: scale(1.06);
 }
 
@@ -158,15 +187,13 @@
 .login-btn:hover {
   background: linear-gradient(135deg, #300708 0%, #5a1a1d 100%);
   filter:
-    drop-shadow(0 0 6px rgba(255, 255, 255, 0.7)) 
-    drop-shadow(0 0 14px rgba(255, 255, 255, 0.45)) 
-    drop-shadow(0 0 24px rgba(255, 255, 255, 0.25));
+    drop-shadow(0 0 6px rgba(255, 255, 255, 0.7)) drop-shadow(0 0 14px rgba(255, 255, 255, 0.45)) drop-shadow(0 0 24px rgba(255, 255, 255, 0.25));
   transform: scale(1.06);
 }
 
 .login-icon {
   font-size: 1.3rem;
-} 
+}
 
 .user-menu {
   position: relative;
@@ -268,8 +295,7 @@
 .mobile-toggle:hover {
   color: #eaba7f;
   filter:
-    drop-shadow(0 0 6px rgba(255, 255, 255, 0.7)) 
-    drop-shadow(0 0 14px rgba(255, 255, 255, 0.45));
+    drop-shadow(0 0 6px rgba(255, 255, 255, 0.7)) drop-shadow(0 0 14px rgba(255, 255, 255, 0.45));
 }
 
 .mobile-toggle span:nth-child(1) {
@@ -326,9 +352,7 @@
   color: #300708;
   font-size: 1rem;
   filter:
-    drop-shadow(0 0 6px rgba(255, 255, 255, 0.7)) 
-    drop-shadow(0 0 14px rgba(255, 255, 255, 0.45)) 
-    drop-shadow(0 0 24px rgba(255, 255, 255, 0.25));
+    drop-shadow(0 0 6px rgba(255, 255, 255, 0.7)) drop-shadow(0 0 14px rgba(255, 255, 255, 0.45)) drop-shadow(0 0 24px rgba(255, 255, 255, 0.25));
 }
 
 /* Navbar Extension Panel */
@@ -390,9 +414,7 @@
   box-shadow: 0 8px 20px rgba(139, 115, 85, 0.4);
   border-color: rgba(255, 255, 255, 0.2);
   filter:
-    drop-shadow(0 0 6px rgba(255, 255, 255, 0.7)) 
-    drop-shadow(0 0 14px rgba(255, 255, 255, 0.45)) 
-    drop-shadow(0 0 24px rgba(255, 255, 255, 0.25));
+    drop-shadow(0 0 6px rgba(255, 255, 255, 0.7)) drop-shadow(0 0 14px rgba(255, 255, 255, 0.45)) drop-shadow(0 0 24px rgba(255, 255, 255, 0.25));
 }
 
 /* ============================================ */
@@ -503,7 +525,7 @@
   .navbar-extension {
     display: none;
   }
-  
+
   .all-categories-trigger {
     display: none;
   }
@@ -514,12 +536,12 @@
   .extension-container {
     padding: 30px 40px;
   }
-  
+
   .extension-grid {
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 16px;
   }
-  
+
   .extension-category {
     padding: 14px 18px;
     font-size: 0.9rem;
@@ -530,7 +552,7 @@
   .extension-container {
     padding: 35px 50px;
   }
-  
+
   .extension-grid {
     grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
     gap: 18px;

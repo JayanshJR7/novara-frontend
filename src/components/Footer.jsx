@@ -104,7 +104,7 @@ const Footer = () => {
                   <FaWhatsapp className="contact-icon" />
                   <div>
                     <strong>WhatsApp</strong>
-                    <a href="https://wa.me/8209845088" target="_blank" rel="noopener noreferrer">Message Us</a>
+                    <a href="https://wa.me/+918209845088" target="_blank" rel="noopener noreferrer">Message Us</a>
                   </div>
                 </li>
                 <li>

@@ -74,7 +74,8 @@ export const productsAPI = {
       }
     });
     return response.data;
-  }
+  },
+  search: (query) => api.get(`/products/search?query=${encodeURIComponent(query)}`)
 };
 
 // Cart & Wishlist API

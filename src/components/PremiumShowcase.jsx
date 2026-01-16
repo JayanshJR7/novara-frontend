@@ -34,21 +34,18 @@ const PremiumShowcase = () => {
       const isSmallMobile = window.innerWidth < 450;
       const isTablet = window.innerWidth >= 576 && window.innerWidth < 1024;
 
-      // Small Mobile (< 450px) - 2 columns, tighter spacing
-      // Tablet (576px - 1024px) - 3 columns
       if (isTablet) {
         return premiumProducts.map((_, i) => {
           const row = Math.floor(i / 3);
           const col = i % 3;
           return {
-            top: `${8 + row * 35}%`, // REDUCED from 45 to 35
+            top: `${8 + row * 35}%`, 
             left: `${4 + col * 32}%`,
             size: i % 2 === 0 ? 'medium' : 'small',
           };
         });
       }
 
-      // Mobile (450px - 576px) - 2 columns
       if (isMobile) {
         return premiumProducts.map((_, i) => ({
           top: `${15 + i * 110}px`, // REDUCED from 140 to 110
@@ -180,7 +177,7 @@ const PremiumShowcase = () => {
                 top: position.top,
                 left: position.left,
                 zIndex: isHovered ? 1000 : 10 + index,
-                transform: isHovered ? 'scale(1.15)' : 'scale(1)',
+                transform: isHovered ? 'scale(1.3)' : 'scale(1)',
                 filter:
                   hoveredIndex !== null && !isHovered
                     ? 'blur(3px) brightness(0.6)'
