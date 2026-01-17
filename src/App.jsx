@@ -22,6 +22,8 @@ import ContactUs from './pages/ContactUs';
 import TermsConditions from './pages/TermsCondition';
 import ReturnPolicy from './pages/ReturnPolicy'
 import Careguide from './pages/Careguide';
+import ShippingPolicy from './pages/ShippingPolicy';
+import PolicyPriv from './pages/PolicyPriv';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -79,6 +81,8 @@ function App() {
                   <Route path="/terms-conditions" element={<TermsConditions />} />
                   <Route path="/return-policy" element={<ReturnPolicy />} />
                   <Route path="/careguide" element={<Careguide />} />
+                  <Route path="/shipping-policy" element={<ShippingPolicy />} />
+                  <Route path="/privacy-policy" element={<PolicyPriv />} />
                 </Routes>
               </main>
             </div>

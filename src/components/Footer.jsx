@@ -85,6 +85,9 @@ const Footer = () => {
               <ul className="footer-links">
                 <li><Link to="/contact">Contact Us</Link></li>
                 <li><Link to="/return-policy">Returns Policy</Link></li>
+                <li><Link to="/shipping-policy">Shipping Policy</Link></li>
+                <li><Link to="/terms-conditions">Terms & Conditions</Link></li>
+                <li><Link to="/privacy-policy">Privacy Policy</Link></li>
               </ul>
             </div>
 
@@ -108,7 +111,7 @@ const Footer = () => {
                   </div>
                 </li>
                 <li>
-                  <FaEnvelope className="contact-icon" />
+                  <FaEnvelope className=" -icon" />
                   <div>
                     <strong>Email</strong>
                     <a href="mailto:thenovarajewels@gmail.com">thenovarajewels@gmail.com</a>
@@ -136,9 +139,6 @@ const Footer = () => {
           <div className="footer-bottom-content">
             <div className="copyright">
               <p>&copy; {currentYear} Novara Jewels | Powered by Divine Enterprises</p>
-            </div>
-            <div className="legal-links">
-              <Link to="/terms-conditions">Terms & Conditions</Link>
             </div>
           </div>
           <div className="payment-security">
