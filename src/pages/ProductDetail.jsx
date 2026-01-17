@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { productsAPI } from '../services/api';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { FiHeart, FiShoppingBag, FiArrowLeft, FiZoomIn, FiCheck } from 'react-icons/fi';
+import { FiHeart, FiShoppingBag, FiArrowLeft, FiZoomIn, FiCheck, FiMaximize2, FiX, FiChevronLeft, FiChevronRight, FiZoomOut } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import './ProductDetail.css';
 
@@ -22,6 +22,14 @@ const ProductDetail = () => {
   const [addingToCart, setAddingToCart] = useState(false);
   const [addingToWishlist, setAddingToWishlist] = useState(false);
 
+  // Fullscreen modal states
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [fullscreenZoomed, setFullscreenZoomed] = useState(false);
+  const [fullscreenZoomLevel, setFullscreenZoomLevel] = useState(1);
+  const [fullscreenDragOffset, setFullscreenDragOffset] = useState({ x: 0, y: 0 });
+  const [fullscreenDragStart, setFullscreenDragStart] = useState({ x: 0, y: 0 });
+  const [isFullscreenDragging, setIsFullscreenDragging] = useState(false);
+
   // Mobile zoom states
   const [isMobileZoomed, setIsMobileZoomed] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -30,10 +38,47 @@ const ProductDetail = () => {
 
   const imageRef = useRef(null);
   const zoomContainerRef = useRef(null);
+  const fullscreenImageRef = useRef(null);
+
+  // Helper function to format price with 3 decimals and Indian number format
+  const formatPrice = (price) => {
+    if (!price) return '0.000';
+    return price.toFixed(3).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
 
   useEffect(() => {
     fetchProduct();
   }, [id]);
+
+  // Prevent body scroll when fullscreen is open
+  useEffect(() => {
+    if (isFullscreen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isFullscreen]);
+
+  // Handle keyboard navigation in fullscreen
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!isFullscreen) return;
+
+      if (e.key === 'Escape') {
+        closeFullscreen();
+      } else if (e.key === 'ArrowLeft') {
+        navigateImage(-1);
+      } else if (e.key === 'ArrowRight') {
+        navigateImage(1);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isFullscreen, selectedImage, product]);
 
   const fetchProduct = async () => {
     try {
@@ -179,6 +224,85 @@ const ProductDetail = () => {
     setIsDragging(false);
   };
 
+  // Fullscreen functions
+  const openFullscreen = () => {
+    setIsFullscreen(true);
+    setFullscreenZoomed(false);
+    setFullscreenZoomLevel(1);
+    setFullscreenDragOffset({ x: 0, y: 0 });
+  };
+
+  const closeFullscreen = () => {
+    setIsFullscreen(false);
+    setFullscreenZoomed(false);
+    setFullscreenZoomLevel(1);
+    setFullscreenDragOffset({ x: 0, y: 0 });
+  };
+
+  const toggleFullscreenZoom = () => {
+    if (fullscreenZoomed) {
+      setFullscreenZoomLevel(1);
+      setFullscreenDragOffset({ x: 0, y: 0 });
+    } else {
+      setFullscreenZoomLevel(2.5);
+    }
+    setFullscreenZoomed(!fullscreenZoomed);
+  };
+
+  const navigateImage = (direction) => {
+    const images = product.itemImages || [product.itemImage];
+    const newIndex = (selectedImage + direction + images.length) % images.length;
+    setSelectedImage(newIndex);
+    setFullscreenZoomed(false);
+    setFullscreenZoomLevel(1);
+    setFullscreenDragOffset({ x: 0, y: 0 });
+  };
+
+  // Fullscreen drag handlers
+  const handleFullscreenMouseDown = (e) => {
+    if (!fullscreenZoomed) return;
+    setIsFullscreenDragging(true);
+    setFullscreenDragStart({
+      x: e.clientX - fullscreenDragOffset.x,
+      y: e.clientY - fullscreenDragOffset.y
+    });
+  };
+
+  const handleFullscreenMouseMove = (e) => {
+    if (!isFullscreenDragging || !fullscreenZoomed) return;
+    setFullscreenDragOffset({
+      x: e.clientX - fullscreenDragStart.x,
+      y: e.clientY - fullscreenDragStart.y
+    });
+  };
+
+  const handleFullscreenMouseUp = () => {
+    setIsFullscreenDragging(false);
+  };
+
+  // Fullscreen touch handlers
+  const handleFullscreenTouchStart = (e) => {
+    if (!fullscreenZoomed) return;
+    setIsFullscreenDragging(true);
+    setFullscreenDragStart({
+      x: e.touches[0].clientX - fullscreenDragOffset.x,
+      y: e.touches[0].clientY - fullscreenDragOffset.y
+    });
+  };
+
+  const handleFullscreenTouchMove = (e) => {
+    if (!isFullscreenDragging || !fullscreenZoomed) return;
+    e.preventDefault();
+    setFullscreenDragOffset({
+      x: e.touches[0].clientX - fullscreenDragStart.x,
+      y: e.touches[0].clientY - fullscreenDragStart.y
+    });
+  };
+
+  const handleFullscreenTouchEnd = () => {
+    setIsFullscreenDragging(false);
+  };
+
   if (loading) {
     return (
       <div className="product-detail-novara">
@@ -266,6 +390,12 @@ const ProductDetail = () => {
                   <>Out of Stock</>
                 )}
               </div>
+
+              {/* Fullscreen Button */}
+              <button className="fullscreen-btn" onClick={openFullscreen} title="View fullscreen">
+                <FiMaximize2 />
+              </button>
+
               <div
                 className={`image-zoom-container ${isZoomed ? 'zoomed' : ''} ${isMobileZoomed ? 'mobile-zoomed' : ''}`}
                 onMouseMove={handleMouseMove}
@@ -325,7 +455,7 @@ const ProductDetail = () => {
 
             <div className="price-section-elegant">
               <div className="price-main">
-                ₹{(product.calculatedPrice || product.finalPrice || product.basePrice)?.toLocaleString('en-IN')}
+                ₹{formatPrice(product.calculatedPrice || product.finalPrice || product.basePrice)}
               </div>
               <p className="price-note">Inclusive of all taxes</p>
             </div>
@@ -367,14 +497,14 @@ const ProductDetail = () => {
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                 </svg>
-                <span>Certified Pure Silver</span>
+                <span>Certified 925 Silver</span>
               </div>
               <div className="trust-item-elegant">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="12" cy="12" r="10"></circle>
                   <polyline points="12 6 12 12 16 14"></polyline>
                 </svg>
-                <span>6 Months Warranty</span>
+                <span>Hallmarked jewellery</span>
               </div>
               <div className="trust-item-elegant">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -382,7 +512,7 @@ const ProductDetail = () => {
                   <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
                   <line x1="12" y1="22.08" x2="12" y2="12"></line>
                 </svg>
-                <span>Secure Packaging</span>
+                <span>Secure Brand packaging</span>
               </div>
             </div>
           </div>
@@ -391,38 +521,47 @@ const ProductDetail = () => {
         {/* Product Details */}
         <div className="details-section-elegant">
 
-          {/* Description */}
-          {product.description && (
+          {/* Description and Weight */}
+          {(product.description || (product.weight && (product.weight.silverWeight > 0 || product.weight.grossWeight > 0))) && (
             <div className="detail-card-elegant">
-              <h3>Description</h3>
-              <p>{product.description}</p>
-              <h3>Weight</h3>
-              <p>Gross weight: {product.weight.grossWeight} {product.weight.unit}</p>
-              <p>Net weight: {product.weight.netWeight} {product.weight.unit}</p>
+              {product.description && (
+                <>
+                  <h3>Description</h3>
+                  <p>{product.description}</p>
+                </>
+              )}
+              {product.weight && (product.weight.silverWeight > 0 || product.weight.grossWeight > 0) && (
+                <>
+                  <h3>Weight</h3>
+                  {product.weight.grossWeight > 0 && (
+                    <p>Gross weight: {product.weight.grossWeight.toFixed(3)} {product.weight.unit}</p>
+                  )}
+                  {product.weight.silverWeight > 0 && (
+                    <p>Silver weight: {product.weight.silverWeight.toFixed(3)} {product.weight.unit}</p>
+                  )}
+                </>
+              )}
+              <p className="info-weight-note">The weights are approx and may vary from piece to piece</p>
             </div>
           )}
 
           {/* Specifications */}
-          {(product.weight?.netWeight > 0 || product.weight?.grossWeight > 0) && (
+          {(product.weight?.silverWeight > 0 || product.weight?.grossWeight > 0) && (
             <div className="detail-card-elegant">
               <h3>Specifications</h3>
               <div className="specs-grid-elegant">
-                {product.weight.netWeight > 0 && (
+                {product.weight.silverWeight > 0 && (
                   <div className="spec-item-elegant">
-                    <span className="spec-label">Net Weight</span>
-                    <span className="spec-value">{product.weight.netWeight} {product.weight.unit}</span>
+                    <span className="spec-label">Silver Weight</span>
+                    <span className="spec-value">{product.weight.silverWeight.toFixed(3)} {product.weight.unit}</span>
                   </div>
                 )}
                 {product.weight.grossWeight > 0 && (
                   <div className="spec-item-elegant">
                     <span className="spec-label">Gross Weight</span>
-                    <span className="spec-value">{product.weight.grossWeight} {product.weight.unit}</span>
+                    <span className="spec-value">{product.weight.grossWeight.toFixed(3)} {product.weight.unit}</span>
                   </div>
                 )}
-                <div className="spec-item-elegant">
-                  <span className="spec-label">Material</span>
-                  <span className="spec-value">925 Silver</span>
-                </div>
                 <div className="spec-item-elegant">
                   <span className="spec-label">Purity</span>
                   <span className="spec-value">92.5%</span>
@@ -454,6 +593,80 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
+
+      {/* Fullscreen Modal */}
+      {isFullscreen && (
+        <div className="fullscreen-modal" onClick={closeFullscreen}>
+          <div className="fullscreen-overlay"></div>
+
+          {/* Close Button */}
+          <button className="fullscreen-close" onClick={closeFullscreen}>
+            <FiX />
+          </button>
+
+          {/* Zoom Toggle */}
+          <button className="fullscreen-zoom-toggle" onClick={(e) => { e.stopPropagation(); toggleFullscreenZoom(); }}>
+            {fullscreenZoomed ? <FiZoomOut /> : <FiZoomIn />}
+          </button>
+
+          {/* Image Counter */}
+          {images.length > 1 && (
+            <div className="fullscreen-counter">
+              {selectedImage + 1} / {images.length}
+            </div>
+          )}
+
+          {/* Navigation Arrows */}
+          {images.length > 1 && (
+            <>
+              <button
+                className="fullscreen-nav fullscreen-nav-prev"
+                onClick={(e) => { e.stopPropagation(); navigateImage(-1); }}
+              >
+                <FiChevronLeft />
+              </button>
+              <button
+                className="fullscreen-nav fullscreen-nav-next"
+                onClick={(e) => { e.stopPropagation(); navigateImage(1); }}
+              >
+                <FiChevronRight />
+              </button>
+            </>
+          )}
+
+          {/* Image Container */}
+          <div
+            className="fullscreen-content"
+            onClick={(e) => e.stopPropagation()}
+            onMouseDown={handleFullscreenMouseDown}
+            onMouseMove={handleFullscreenMouseMove}
+            onMouseUp={handleFullscreenMouseUp}
+            onMouseLeave={handleFullscreenMouseUp}
+            onTouchStart={handleFullscreenTouchStart}
+            onTouchMove={handleFullscreenTouchMove}
+            onTouchEnd={handleFullscreenTouchEnd}
+          >
+            <img
+              ref={fullscreenImageRef}
+              src={images[selectedImage]}
+              alt={product.itemname}
+              className="fullscreen-image"
+              style={{
+                transform: `scale(${fullscreenZoomLevel}) translate(${fullscreenDragOffset.x / fullscreenZoomLevel}px, ${fullscreenDragOffset.y / fullscreenZoomLevel}px)`,
+                cursor: fullscreenZoomed ? (isFullscreenDragging ? 'grabbing' : 'grab') : 'default',
+              }}
+              draggable={false}
+            />
+          </div>
+
+          {/* Instruction Text */}
+          {fullscreenZoomed && (
+            <div className="fullscreen-instruction">
+              Drag to pan the image
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

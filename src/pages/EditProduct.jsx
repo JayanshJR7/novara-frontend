@@ -20,7 +20,7 @@ const EditProduct = () => {
     description: '',
     deliveryType: 'ready-to-ship',
     inStock: true,
-    netWeight: '',
+    silverWeight: '',
     grossWeight: '',
     weightUnit: 'grams'
   });
@@ -74,7 +74,7 @@ const EditProduct = () => {
         description: product.description || '',
         deliveryType: product.deliveryType || 'ready-to-ship',
         inStock: product.inStock !== undefined ? product.inStock : true,
-        netWeight: product.weight?.netWeight || '',
+        silverWeight: product.weight?.silverWeight || '',
         grossWeight: product.weight?.grossWeight || '',
         weightUnit: product.weight?.unit || 'grams'
       });
@@ -160,7 +160,7 @@ const EditProduct = () => {
       return false;
     }
 
-    if (formData.netWeight && parseFloat(formData.netWeight) < 0) {
+    if (formData.silverWeight && parseFloat(formData.silverWeight) < 0) {
       setError('Net weight cannot be negative');
       return false;
     }
@@ -193,16 +193,16 @@ const EditProduct = () => {
 
       formDataToSend.append('itemname', formData.itemname.trim());
       formDataToSend.append('itemCode', formData.itemCode.trim().toUpperCase());
-      formDataToSend.append('basePrice', formData.basePrice.toString());
+      formDataToSend.append('basePrice', parseFloat(formData.basePrice).toFixed(3));
       formDataToSend.append('category', formData.category);
       formDataToSend.append('description', formData.description.trim());
       formDataToSend.append('deliveryType', formData.deliveryType);
       formDataToSend.append('inStock', formData.inStock);
 
-      // Add weight data
-      if (formData.netWeight || formData.grossWeight) {
-        formDataToSend.append('weight[netWeight]', formData.netWeight ? parseFloat(formData.netWeight) : 0);
-        formDataToSend.append('weight[grossWeight]', formData.grossWeight ? parseFloat(formData.grossWeight) : 0);
+      // Add weight data with 3 decimal precision
+      if (formData.silverWeight || formData.grossWeight) {
+        formDataToSend.append('weight[silverWeight]', formData.silverWeight ? parseFloat(formData.silverWeight).toFixed(3) : '0.000');
+        formDataToSend.append('weight[grossWeight]', formData.grossWeight ? parseFloat(formData.grossWeight).toFixed(3) : '0.000');
         formDataToSend.append('weight[unit]', formData.weightUnit);
       }
 
@@ -422,16 +422,16 @@ const EditProduct = () => {
 
             <div className="form-row">
               <div className="form-group">
-                <label>Net Weight (Silver)</label>
+                <label>Silver Weight</label>
                 <div className="weight-input-group">
                   <input
                     type="number"
-                    name="netWeight"
-                    value={formData.netWeight}
+                    name="silverWeight"
+                    value={formData.silverWeight}
                     onChange={handleChange}
-                    placeholder="0.00"
+                    placeholder="0.000"
                     min="0"
-                    step="0.01"
+                    step="0.001"
                   />
                   <select
                     name="weightUnit"
@@ -454,9 +454,9 @@ const EditProduct = () => {
                     name="grossWeight"
                     value={formData.grossWeight}
                     onChange={handleChange}
-                    placeholder="0.00"
+                    placeholder="0.000"
                     min="0"
-                    step="0.01"
+                    step="0.001"
                   />
                   <span className="unit-display">{formData.weightUnit}</span>
                 </div>
@@ -471,7 +471,7 @@ const EditProduct = () => {
                 <line x1="12" y1="8" x2="12.01" y2="8" />
               </svg>
               <p>
-                <strong>Note:</strong> Net Weight is the pure silver content, while Gross Weight includes stones,
+                <strong>Note:</strong> Silver Weight is the pure silver content, while Gross Weight includes stones,
                 gems, and other materials. Leave blank if not applicable.
               </p>
             </div>
@@ -489,16 +489,16 @@ const EditProduct = () => {
                   name="basePrice"
                   value={formData.basePrice}
                   onChange={handleChange}
-                  placeholder="10000"
+                  placeholder="10000.000"
                   min="0"
-                  step="0.01"
+                  step="0.001"
                   required
                 />
               </div>
             </div>
 
             <div className="pricing-note">
-              <p>💡 Final Price (after 10% discount) = ₹{formData.basePrice ? (formData.basePrice * 0.9).toFixed(2) : '0'}</p>
+              <p>💡 Final Price (after 10% discount) = ₹{formData.basePrice ? (formData.basePrice * 0.9).toFixed(3) : '0.000'}</p>
             </div>
           </div>
 

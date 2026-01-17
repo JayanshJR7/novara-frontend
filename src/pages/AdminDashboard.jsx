@@ -857,9 +857,9 @@ const AdminDashboard = () => {
                                                 <td>{product.itemname}</td>
                                                 <td>{product.itemCode}</td>
                                                 <td>
-                                                    {product.weight?.netWeight > 0 ? (
+                                                    {product.weight?.silverWeight > 0 ? (
                                                         <span style={{ fontSize: '13px', color: '#666' }}>
-                                                            {product.weight.netWeight} {product.weight.unit}
+                                                            {product.weight.silverWeight} {product.weight.unit}
                                                         </span>
                                                     ) : (
                                                         <span style={{ fontSize: '13px', color: '#ccc' }}>N/A</span>
