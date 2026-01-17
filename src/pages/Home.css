@@ -198,6 +198,132 @@
   color: #666;
 }
 
+/* Brand Tagline Section */
+.brand-tagline-section {
+  padding: 4rem 0 2rem 0;
+  background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+}
+
+.brand-tagline {
+  text-align: center;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
+}
+
+.brand-tagline.home-anim-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.brand-tagline h2 {
+  font-family: "Dancing Script", cursive;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 5rem;
+  color: #300708;
+  margin: 0 0 1.5rem 0;
+  letter-spacing: 2px;
+  position: relative;
+  display: inline-block;
+}
+
+.brand-tagline h2::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #d4af37, transparent);
+}
+
+.brand-subtitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 300;
+  color: #666;
+  margin: 0;
+  letter-spacing: 1px;
+  font-style: italic;
+  opacity: 0;
+  animation: fadeInUp 1s ease 0.3s forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+  .brand-tagline-section {
+    padding: 3rem 0 1.5rem 0;
+  }
+
+  .brand-tagline h2 {
+    font-size: 4rem;
+  }
+
+  .brand-subtitle {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .brand-tagline h2 {
+    font-size: 3.5rem;
+  }
+
+  .brand-subtitle {
+    font-size: 1.1rem;
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .brand-tagline h2 {
+    font-size: 2.8rem;
+  }
+
+  .brand-tagline h2::after {
+    width: 100px;
+  }
+
+  .brand-subtitle {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .brand-tagline h2 {
+    font-size: 2.3rem;
+  }
+
+  .brand-subtitle {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .brand-tagline h2 {
+    font-size: 2rem;
+  }
+
+  .brand-subtitle {
+    font-size: 0.85rem;
+  }
+}
+
 /* Responsive */
 @media (max-width: 968px) {
 
@@ -213,12 +339,15 @@
     gap: 1rem;
     align-items: flex-start;
   }
-  .products-flex{
+
+  .products-flex {
     transform: translateY(2%);
   }
 }
+
 /* Medium screens */
 @media (max-width: 968px) {
+
   .welcome-section h1,
   .categories-section h2,
   .section-header h2,
@@ -231,7 +360,7 @@
     gap: 1rem;
     align-items: flex-start;
   }
-  
+
   .products-flex {
     transform: translateY(2%);
   }
@@ -240,9 +369,10 @@
 /* Tablets and small laptops */
 @media (max-width: 768px) {
   .product-card {
-    width: 220px; /* Cards ko chota kiya */
+    width: 220px;
+    /* Cards ko chota kiya */
   }
-  
+
   .products-flex {
     gap: 1rem;
   }
@@ -250,6 +380,7 @@
 
 /* Large phones (iPhone 14 Pro Max, Samsung S21+, etc) */
 @media (max-width: 576px) {
+
   .categories-grid,
   .features-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -257,9 +388,10 @@
   }
 
   .product-card {
-    width: 165px; /* Aur chota kiya */
+    width: 165px;
+    /* Aur chota kiya */
   }
-  
+
   .products-flex {
     gap: 0.8rem;
     transform: translateY(1.5%);
@@ -269,9 +401,10 @@
 /* Small phones (iPhone SE, Samsung S23, Pixel 5, etc) - 320px to 400px */
 @media (max-width: 400px) {
   .product-card {
-    width: 155px; /* Aur bhi chota */
+    width: 155px;
+    /* Aur bhi chota */
   }
-  
+
   .products-flex {
     display: flex;
     align-items: center;
@@ -285,31 +418,33 @@
 /* Extra small phones (Very small devices like iPhone SE 1st gen, old Android) */
 @media (max-width: 360px) {
   .product-card {
-    width: 145px; /* Sabse chota size */
+    width: 145px;
+    /* Sabse chota size */
   }
-  
+
   .products-flex {
     gap: 0.5rem;
   }
-  
+
   .trending-now-section h2 {
-    font-size: 3.5rem; 
+    font-size: 3.5rem;
   }
 }
 
 @media (max-width: 320px) {
   .product-card {
-    width: 140px; /* Minimum size */
+    width: 140px;
+    /* Minimum size */
   }
-  
-  .product-price{
+
+  .product-price {
     font-size: 0.5rem;
   }
-  
+
   .products-flex {
     gap: 0.4rem;
   }
-  
+
   .trending-now-section h2 {
     font-size: 3rem;
   }

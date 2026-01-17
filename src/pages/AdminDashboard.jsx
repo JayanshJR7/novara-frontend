@@ -190,7 +190,7 @@ const AdminDashboard = () => {
     };
     const fetchCarouselSlides = async () => {
         try {
-            const response = await carouselAPI.getAll(); 
+            const response = await carouselAPI.getAll();
             setCarouselSlides(Array.isArray(response?.slides) ? response.slides : []);
         } catch (error) {
             console.error('Failed to fetch carousel slides:', error);
@@ -837,6 +837,8 @@ const AdminDashboard = () => {
                                             <th>Image</th>
                                             <th>Name</th>
                                             <th>Code</th>
+                                            <th>Weight</th>
+                                            <th>Delivery</th>
                                             <th>Price</th>
                                             <th>Stock</th>
                                             <th>Actions</th>
@@ -847,13 +849,27 @@ const AdminDashboard = () => {
                                             <tr key={product._id}>
                                                 <td>
                                                     <img
-                                                        src={product.itemImage}
+                                                        src={product.itemImages?.[0] || product.itemImage}
                                                         alt={product.itemname}
                                                         className="product-thumb-new"
                                                     />
                                                 </td>
                                                 <td>{product.itemname}</td>
                                                 <td>{product.itemCode}</td>
+                                                <td>
+                                                    {product.weight?.netWeight > 0 ? (
+                                                        <span style={{ fontSize: '13px', color: '#666' }}>
+                                                            {product.weight.netWeight} {product.weight.unit}
+                                                        </span>
+                                                    ) : (
+                                                        <span style={{ fontSize: '13px', color: '#ccc' }}>N/A</span>
+                                                    )}
+                                                </td>
+                                                <td>
+                                                    <span className={`delivery-type-badge ${product.deliveryType === 'ready-to-ship' ? 'ready-ship' : 'made-order'}`}>
+                                                        {product.deliveryType === 'ready-to-ship' ? '🚚 5-7 Days' : '⏱️ 20-25 Days'}
+                                                    </span>
+                                                </td>
                                                 <td>
                                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                                                         <span style={{ textDecoration: 'line-through', color: '#999', fontSize: '14px' }}>
@@ -1427,7 +1443,7 @@ const AdminDashboard = () => {
                                 <div className="order-items-list">
                                     {selectedOrder.items?.map((item, index) => (
                                         <div key={index} className="order-item-row">
-                                            <img src={item.product.itemImage} alt={item.product.itemname} loading='lazy' className="item-image-modal" />
+                                            <img src={item.product.itemImages?.[0] || item.product.itemImage} alt={item.product.itemname} loading='lazy' className="item-image-modal" />
                                             <div className="item-details-modal">
                                                 <p><strong>{item.product.itemname}</strong></p>
                                                 <p>Code: {item.product.itemCode}</p>

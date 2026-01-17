@@ -20,7 +20,7 @@ const Home = () => {
     setTimeout(() => setHomeAnimReady(true), 100);
   }, []);
 
-  const fetchFeaturedProducts = async () => { 
+  const fetchFeaturedProducts = async () => {
     try {
       setLoading(true);
       const data = await productsAPI.getAll();
@@ -49,7 +49,6 @@ const Home = () => {
           <ImageCarousel />
         </div>
       </section>
-
       <section className="featured-section">
         <div className={`home-anim-featured ${homeAnimReady ? 'home-anim-visible' : ''}`}>
           {loading ? (
@@ -70,6 +69,12 @@ const Home = () => {
               ))}
             </div>
           )}
+        </div>
+      </section>
+      <section className="brand-tagline-section">
+        <div className={`brand-tagline ${homeAnimReady ? 'home-anim-visible' : ''}`}>
+          <h2>Fine 925 Silver</h2>
+          <p className="brand-subtitle">The best thing you'll wear after your smile.</p>
         </div>
       </section>
       <section className="trending-now-section">

@@ -605,7 +605,6 @@ const Checkout = () => {
             </form>
           </div>
 
-          {/* Right: Order Summary */}
           <div className="order-summary-section">
             <div className="order-summary-card">
               <h3>Order Summary</h3>
@@ -613,7 +612,7 @@ const Checkout = () => {
               <div className="summary-items">
                 {cart.map((item) => (
                   <div key={item.product._id} className="summary-item">
-                    <img src={item.product.itemImage} alt={item.product.itemName} />
+                    <img src={item.product.itemImages[0]} alt={item.product.itemName} />
                     <div className="item-info">
                       <p className="item-name">{item.product.itemName}</p>
                       <p className="item-qty">Qty: {item.quantity}</p>

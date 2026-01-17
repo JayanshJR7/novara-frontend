@@ -173,7 +173,7 @@ const Cart = () => {
                 return (
                   <div key={productId} className="cart-item">
                     <img
-                      src={item.product.itemImage}
+                      src={item.product.itemImages[0]}
                       loading='lazy'
                       alt={item.product.itemname}
                       className="item-image"

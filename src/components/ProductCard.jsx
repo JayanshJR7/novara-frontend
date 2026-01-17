@@ -62,7 +62,7 @@ const ProductCard = ({ product }) => {
 
     try {
       setAddingToWishlist(true);
-      
+
       if (inWishlist) {
         await removeFromWishlist(product._id);
         toast.info(`${product.itemname} removed from wishlist`, {
@@ -90,7 +90,7 @@ const ProductCard = ({ product }) => {
   if (!product || !product._id) {
     return null;
   }
-  
+
   const price = product.finalPrice || 0;
   const inWishlist = isInWishlist(product._id);
 
@@ -101,16 +101,22 @@ const ProductCard = ({ product }) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <Link to={`/product/${product._id}`} className="product-link">
-        {/* Product Image */}
         <div className="product-image">
           <img
-            src={product.itemImage}
+            src={product.itemImages?.[0] || product.itemImage}
             alt={product.itemname}
             loading='lazy'
             onError={(e) => {
               e.target.src = 'https://via.placeholder.com/400?text=No+Image';
             }}
           />
+          <div className="delivery-badge">
+            {product.deliveryType === 'ready-to-ship' ? (
+              <span className="ready-ship">🚛5-7 Days</span>
+            ) : (
+              <span className="made-order">⏱️ 20-25 Days</span>
+            )}
+          </div>
 
           <div className={`card-overlay ${isHovered ? 'visible' : ''}`}>
             <button

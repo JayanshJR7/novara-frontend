@@ -206,7 +206,7 @@ const SearchBar = () => {
                                                         onClick={() => handleProductClick(product._id)}
                                                     >
                                                         <img
-                                                            src={product.itemImage}
+                                                            src={product.itemImages[0]}
                                                             alt={product.itemname}
                                                         />
                                                         <div className="product-search-info">

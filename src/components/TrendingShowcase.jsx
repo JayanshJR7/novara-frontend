@@ -160,7 +160,7 @@ const TrendingShowcase = () => {
                                 >
                                     <div className="card-image-container">
                                         <img
-                                            src={product.itemImage}
+                                            src={product.itemImages[0]}
                                             alt={product.itemname}
                                             loading='lazy'
                                             className="card-image"

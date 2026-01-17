@@ -612,6 +612,28 @@
     color: #300708;
 }
 
+/* Delivery Type Badge Styles */
+.delivery-type-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.delivery-type-badge.ready-ship {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #2e7d32;
+}
+
+.delivery-type-badge.made-order {
+    background: #fff3e0;
+    color: #e65100;
+    border: 1px solid #e65100;
+}
+
 .delivery-charge-update {
     display: flex;
     gap: 10px;
@@ -1056,6 +1078,7 @@
     vertical-align: middle;
     color: #300708;
 }
+
 .categories-section-new {
     padding: 20px;
     cursor: default;
@@ -1075,7 +1098,8 @@
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    min-width: 900px; /* keeps alignment intact */
+    min-width: 900px;
+    /* keeps alignment intact */
 }
 
 /* HEADER */
@@ -1153,11 +1177,11 @@
     color: #c62828;
 }
 
-.smaller{
+.smaller {
     font-size: 5px;
 }
 
-.coupon-inputs{
+.coupon-inputs {
     width: 100%;
     padding: 0.75rem;
     border: 2px solid #e0e0e0;
@@ -1167,7 +1191,7 @@
     font-family: inherit;
 }
 
-.coupon-inputs:focus{
+.coupon-inputs:focus {
     outline: none;
     border-color: #300708;
     box-shadow: 0 0 0 3px rgba(48, 7, 8, 0.1);
@@ -1306,7 +1330,8 @@
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    min-width: 1200px; /* ensures proper layout on smaller screens */
+    min-width: 1200px;
+    /* ensures proper layout on smaller screens */
 }
 
 .reviews-table-new thead tr {
