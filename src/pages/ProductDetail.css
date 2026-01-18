@@ -485,6 +485,7 @@
 
 .detail-card-elegant {
   background: white;
+  color: #300708;
   border: 3px solid #f0ebe6;
   border-radius: 24px;
   padding: 40px;
@@ -567,6 +568,43 @@
   font-size: 48px;
   color: #d4af37;
   margin-bottom: 15px;
+}
+
+.detail-icon-link {
+  position: relative;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #300708 0%, #5a1a1d 100%);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.detail-icon-link:hover {
+  color: #ffffff;
+  filter:
+    drop-shadow(0 0 6px rgba(255, 255, 255, 0.7)) drop-shadow(0 0 14px rgba(255, 255, 255, 0.45)) drop-shadow(0 0 24px rgba(255, 255, 255, 0.25));
+  transform: scale(1.06);
+}
+
+.detail-icon-link .badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #8b7355;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .feature-elegant h4 {

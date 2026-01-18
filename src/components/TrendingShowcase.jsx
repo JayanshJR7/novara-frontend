@@ -23,7 +23,6 @@ const TrendingShowcase = () => {
         try {
             setLoading(true);
             const data = await productsAPI.getTrending();
-            // Get 8-12 products for the showcase
             setTrendingProducts(data.products.slice(0, 30));
         } catch (error) {
             console.error('Failed to fetch trending products:', error);
@@ -42,7 +41,7 @@ const TrendingShowcase = () => {
                 autoClose: 3000,
             });
             navigate('/login');
-            return; // ⭐ RETURN add kiya
+            return;
         }
 
         try {
@@ -60,7 +59,6 @@ const TrendingShowcase = () => {
         }
     };
 
-    // ⭐ YE PURA FUNCTION UPDATE KIYA - TOGGLE FUNCTIONALITY KE SAATH
     const handleAddToWishlist = async (e, product) => {
         e.preventDefault();
         e.stopPropagation();
@@ -71,7 +69,7 @@ const TrendingShowcase = () => {
                 autoClose: 3000,
             });
             navigate('/login');
-            return; // ⭐ RETURN add kiya
+            return;
         }
 
         const inWishlist = isInWishlist(product._id);

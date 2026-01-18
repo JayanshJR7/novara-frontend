@@ -5,6 +5,8 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { FiHeart, FiShoppingBag, FiArrowLeft, FiZoomIn, FiCheck, FiMaximize2, FiX, FiChevronLeft, FiChevronRight, FiZoomOut } from 'react-icons/fi';
 import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
+
 import './ProductDetail.css';
 
 const ProductDetail = () => {
@@ -36,9 +38,13 @@ const ProductDetail = () => {
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
 
+  const { cartCount, wishlistCount } = useCart();
+
   const imageRef = useRef(null);
   const zoomContainerRef = useRef(null);
   const fullscreenImageRef = useRef(null);
+  const iconsRef = useRef([]);
+
 
   // Helper function to format price with 3 decimals and Indian number format
   const formatPrice = (price) => {
@@ -328,6 +334,38 @@ const ProductDetail = () => {
     );
   }
 
+  const formatDescription = (description) => {
+    if (!description) return null;
+
+    // Split by newlines
+    const lines = description.split('\n').filter(line => line.trim());
+
+    // Check if it contains bullet points (• or - or *)
+    const hasBullets = lines.some(line =>
+      line.trim().startsWith('•') ||
+      line.trim().startsWith('-') ||
+      line.trim().startsWith('*')
+    );
+
+    if (hasBullets) {
+      // Render as list
+      return (
+        <ul className="description-list">
+          {lines.map((line, index) => {
+            // Remove bullet characters
+            const cleanLine = line.replace(/^[•\-\*]\s*/, '').trim();
+            return cleanLine ? <li key={index}>{cleanLine}</li> : null;
+          })}
+        </ul>
+      );
+    } else {
+      // Render as paragraphs with line breaks
+      return lines.map((line, index) => (
+        <p key={index}>{line}</p>
+      ));
+    }
+  };
+
   const images = product.itemImages || [product.itemImage];
   const inWishlist = isInWishlist(product._id);
 
@@ -344,6 +382,10 @@ const ProductDetail = () => {
           <span className="crumb-category">{product.category}</span>
           <span className="divider">•</span>
           <span className="crumb-current">{product.itemname}</span>
+          <Link to="/cart" className="detail-icon-link" ref={(el) => (iconsRef.current[1] = el)}>
+            <FiShoppingBag /> Cart
+            {cartCount > 0 && <span className="badge">{cartCount}</span>}
+          </Link>
         </div>
 
         {/* Main Grid */}
@@ -527,7 +569,7 @@ const ProductDetail = () => {
               {product.description && (
                 <>
                   <h3>Description</h3>
-                  <p>{product.description}</p>
+                  {formatDescription(product.description)}
                 </>
               )}
               {product.weight && (product.weight.silverWeight > 0 || product.weight.grossWeight > 0) && (

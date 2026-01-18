@@ -37,6 +37,20 @@
 
   display: flex;
   align-items: center;
+  gap: 0.5rem;
+}
+
+.silver-pill {
+  background: linear-gradient(135deg, #daa520 0%, #b8860b 100%);
+  color: white;
+  font-size: 0.55rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(218, 165, 32, 0.3);
 }
 
 .navLogo {
@@ -86,6 +100,21 @@
   transition: all 0.3s;
 }
 
+.navbar-tagline {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.1rem;
+  color: #daa520;
+  font-weight: 600;
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+  text-shadow:
+    0 0 8px rgba(218, 165, 32, 0.4),
+    0 0 15px rgba(218, 165, 32, 0.2);
+  padding-right: 1.5rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  margin-right: 0.5rem;
+}
+
 .mobile-search-wrapper .search-trigger:hover {
   border-color: #333;
   background: #fafafa;
@@ -94,6 +123,11 @@
 .mobile-search-wrapper .search-trigger svg {
   width: 18px;
   height: 18px;
+}
+
+.logoText {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.1rem;
 }
 
 .categories-list {
@@ -599,6 +633,12 @@
     padding: 0 0.6rem;
     border-radius: 28px 0 0 28px;
     backdrop-filter: blur(6px);
+  }
+}
+
+@media (max-width: 340px) {
+  .logoText {
+    font-size: 0.6rem;
   }
 }
 

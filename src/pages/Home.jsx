@@ -10,6 +10,8 @@ import PremiumShowcase from '../components/PremiumShowcase';
 import EndShowcase from '../components/endShowcase';
 import CouponShowcase from '../components/CouponShowcase';
 import ReviewsSection from '../components/ReviewSection';
+import DomeGallery from '../components/DomeGallery';
+import SplashCursor from '../components/SplashCursor';
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,10 +45,30 @@ const Home = () => {
 
   return (
     <div className="home-page">
+      <SplashCursor />
       <Navbar />
       <section className="hero-section">
         <div className={`home-anim-hero ${homeAnimReady ? 'home-anim-visible' : ''}`}>
           <ImageCarousel />
+        </div>
+      </section>
+      <section className='Mydome'>
+        <div className="dome-gallery-wrapper">
+          <div className="dome-gallery-header">
+            <h2 className="dome-gallery-title">The Novara Collection</h2>
+            <p className="dome-gallery-subtitle">Where artistry meets legacy</p>
+          </div>
+          <div className="dome-gallery-container">
+            <DomeGallery
+              fit={1}
+              minRadius={1000}
+              maxVerticalRotationDeg={15}
+              dragDampening={4.2}
+              grayscale={false}
+              openedImageWidth='500px'
+              openedImageHeight='500px'
+            />
+          </div>
         </div>
       </section>
       <section className="featured-section">

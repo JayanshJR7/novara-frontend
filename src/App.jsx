@@ -26,6 +26,7 @@ import ShippingPolicy from './pages/ShippingPolicy';
 import PolicyPriv from './pages/PolicyPriv';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import SplashCursor from './components/SplashCursor'
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -55,8 +56,8 @@ function App() {
   return (
     <>
       {isLoading && isInitialLoad && <NovaraLoader />}
-
       <Router>
+        <SplashCursor />
         <AuthProvider>
           <CartProvider>
             <div className="app">

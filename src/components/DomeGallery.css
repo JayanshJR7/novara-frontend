@@ -1,0 +1,673 @@
+.sphere-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    --radius: 520px;
+    --viewer-pad: 72px;
+    --circ: calc(var(--radius) * 3.14);
+    --rot-y: calc((360deg / var(--segments-x)) / 2);
+    --rot-x: calc((360deg / var(--segments-y)) / 2);
+    --item-width: calc(var(--circ) / var(--segments-x));
+    --item-height: calc(var(--circ) / var(--segments-y));
+}
+
+.sphere-root * {
+    box-sizing: border-box;
+}
+
+.sphere,
+.item,
+.item__image {
+    transform-style: preserve-3d;
+}
+
+main.sphere-main {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    background: transparent;
+}
+
+.stage {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    perspective: calc(var(--radius) * 2);
+    perspective-origin: 50% 50%;
+    contain: layout paint size;
+}
+
+.sphere {
+    transform: translateZ(calc(var(--radius) * -1));
+    will-change: transform;
+}
+
+.overlay,
+.overlay--blur {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.overlay--blur {
+    -webkit-mask-image: radial-gradient(rgba(235, 235, 235, 0) 70%, var(--overlay-blur-color, #060010) 90%);
+    mask-image: radial-gradient(rgba(235, 235, 235, 0) 70%, var(--overlay-blur-color, #060010) 90%);
+    backdrop-filter: blur(3px);
+}
+
+.item {
+    width: calc(var(--item-width) * var(--item-size-x));
+    height: calc(var(--item-height) * var(--item-size-y));
+    position: absolute;
+    top: -999px;
+    bottom: -999px;
+    left: -999px;
+    right: -999px;
+    margin: auto;
+    transform-origin: 50% 50%;
+    backface-visibility: hidden;
+    transition: transform 300ms;
+    transform: rotateY(calc(var(--rot-y) * (var(--offset-x) + ((var(--item-size-x) - 1) / 2)) + var(--rot-y-delta, 0deg))) rotateX(calc(var(--rot-x) * (var(--offset-y) - ((var(--item-size-y) - 1) / 2)) + var(--rot-x-delta, 0deg))) translateZ(var(--radius));
+}
+
+.item__image {
+    position: absolute;
+    display: block;
+    inset: 5px;
+    border-radius: var(--tile-radius, 12px);
+    background: transparent;
+    overflow: hidden;
+    backface-visibility: hidden;
+    transition: transform 300ms;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    pointer-events: auto;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    box-shadow: 0 0 10px rgba(218, 165, 32, 0.695);
+}
+
+.item__image:focus {
+    outline: none;
+}
+
+.item__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    backface-visibility: hidden;
+    filter: var(--image-filter, none);
+    box-shadow:
+        inset 0 0 30px rgba(218, 165, 32, 0.695),
+        0 0 15px rgba(218, 165, 32, 0.2);
+    border-radius: var(--tile-radius, 20px);
+}
+
+.viewer {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--viewer-pad);
+}
+
+.viewer .frame {
+    height: 100%;
+    aspect-ratio: 1;
+    border-radius: var(--enlarge-radius, 32px);
+    display: flex;
+    pointer-events: none;
+}
+
+@media (max-aspect-ratio: 1/1) {
+    .viewer .frame {
+        height: auto;
+        width: 100%;
+    }
+}
+
+.viewer .scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 500ms ease;
+    backdrop-filter: blur(3px);
+}
+
+.sphere-root[data-enlarging='true'] .viewer .scrim {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.viewer .enlarge {
+    position: absolute;
+    z-index: 30;
+    border-radius: var(--enlarge-radius, 32px);
+    overflow: visible;
+    transition: transform 500ms ease, opacity 500ms ease;
+    transform-origin: top left;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    pointer-events: none;
+}
+
+.viewer .enlarge img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: var(--image-filter, none);
+    border-radius: var(--enlarge-radius, 32px);
+    pointer-events: none;
+}
+
+.sphere-root .enlarge-closing img {
+    filter: var(--image-filter, none);
+}
+
+.edge-fade {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 120px;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.edge-fade--top {
+    top: 0;
+    transform: rotate(180deg);
+}
+
+.edge-fade--bottom {
+    bottom: 0;
+}
+
+/* Close Button */
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #ffffff;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 28px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    pointer-events: auto;
+    z-index: 100;
+    font-weight: 300;
+    padding: 0;
+}
+
+.close-btn:hover {
+    background: rgba(218, 165, 32, 0.9);
+    border-color: #daa520;
+    transform: rotate(90deg) scale(1.1);
+}
+
+.close-btn:active {
+    transform: rotate(90deg) scale(0.95);
+}
+
+/* View Product Button Container */
+.enlarge-button-container {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+    animation: fadeInUp 0.4s ease 0.3s both;
+    pointer-events: auto;
+    display: flex;
+    gap: 15px;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.view-product-btn {
+    background: linear-gradient(135deg, #daa520 0%, #b8860b 100%);
+    color: #ffffff;
+    border: none;
+    padding: 14px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(218, 165, 32, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: inherit;
+    pointer-events: auto;
+}
+
+.view-product-btn:hover {
+    background: linear-gradient(135deg, #b8860b 0%, #daa520 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(218, 165, 32, 0.6);
+}
+
+.view-product-btn:active {
+    transform: translateY(0);
+}
+
+/* ========================================
+   RESPONSIVE MEDIA QUERIES
+   ======================================== */
+
+/* Large Desktop - 1440px and above */
+@media (min-width: 1440px) {
+    .enlarge-button-container {
+        bottom: 40px;
+    }
+
+    .view-product-btn {
+        padding: 16px 40px;
+        font-size: 18px;
+    }
+
+    .close-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 32px;
+        top: 20px;
+        right: 20px;
+    }
+}
+
+/* Standard Desktop - 1200px to 1439px */
+@media (max-width: 1439px) and (min-width: 1200px) {
+    .enlarge-button-container {
+        bottom: 35px;
+    }
+
+    .view-product-btn {
+        padding: 15px 36px;
+        font-size: 17px;
+    }
+
+    .close-btn {
+        width: 42px;
+        height: 42px;
+        font-size: 30px;
+    }
+}
+
+/* Laptop - 968px to 1199px */
+@media (max-width: 1199px) and (min-width: 968px) {
+    .viewer .enlarge {
+        border-radius: 28px;
+    }
+
+    .viewer .enlarge img {
+        border-radius: 28px;
+    }
+
+    .enlarge-button-container {
+        bottom: 30px;
+    }
+
+    .view-product-btn {
+        padding: 13px 30px;
+        font-size: 15px;
+        letter-spacing: 0.8px;
+    }
+
+    .close-btn {
+        width: 38px;
+        height: 38px;
+        font-size: 26px;
+        top: 12px;
+        right: 12px;
+    }
+}
+
+/* Tablets - 768px to 967px */
+@media (max-width: 967px) and (min-width: 768px) {
+    .sphere-root {
+        --radius: 450px;
+        --viewer-pad: 60px;
+    }
+
+    .viewer .enlarge {
+        border-radius: 24px;
+    }
+
+    .viewer .enlarge img {
+        border-radius: 24px;
+    }
+
+    .enlarge-button-container {
+        bottom: 25px;
+    }
+
+    .view-product-btn {
+        padding: 12px 28px;
+        font-size: 14px;
+        letter-spacing: 0.7px;
+    }
+
+    .close-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 24px;
+        top: 10px;
+        right: 10px;
+        border-width: 1.5px;
+    }
+
+    .item__image {
+        inset: 4px;
+        border-radius: 10px;
+    }
+}
+
+/* Small Tablets & Large Phones - 576px to 767px */
+@media (max-width: 767px) and (min-width: 576px) {
+    .sphere-root {
+        --radius: 380px;
+        --viewer-pad: 50px;
+    }
+
+    .viewer .enlarge {
+        border-radius: 20px;
+    }
+
+    .viewer .enlarge img {
+        border-radius: 20px;
+    }
+
+    .enlarge-button-container {
+        bottom: 20px;
+    }
+
+    .view-product-btn {
+        padding: 11px 24px;
+        font-size: 13px;
+        letter-spacing: 0.6px;
+        border-radius: 40px;
+    }
+
+    .close-btn {
+        width: 34px;
+        height: 34px;
+        font-size: 22px;
+        top: 8px;
+        right: 8px;
+    }
+
+    .item__image {
+        inset: 3px;
+        border-radius: 8px;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateX(-50%) translateY(15px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    }
+}
+
+/* Medium Phones - 480px to 575px */
+@media (max-width: 575px) and (min-width: 480px) {
+    .sphere-root {
+        --radius: 320px;
+        --viewer-pad: 40px;
+    }
+
+    .viewer .enlarge {
+        border-radius: 18px;
+    }
+
+    .viewer .enlarge img {
+        border-radius: 18px;
+    }
+
+    .enlarge-button-container {
+        bottom: 18px;
+    }
+
+    .view-product-btn {
+        padding: 10px 22px;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+        border-radius: 35px;
+    }
+
+    .close-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 20px;
+        top: 6px;
+        right: 6px;
+    }
+
+    .item__image {
+        inset: 3px;
+        border-radius: 6px;
+    }
+
+    .viewer .scrim {
+        background: rgba(0, 0, 0, 0.5);
+    }
+}
+
+/* Small Phones - 400px to 479px */
+@media (max-width: 479px) and (min-width: 400px) {
+    .sphere-root {
+        --radius: 280px;
+        --viewer-pad: 30px;
+    }
+
+    .viewer .enlarge {
+        border-radius: 16px;
+    }
+
+    .viewer .enlarge img {
+        border-radius: 16px;
+    }
+
+    .enlarge-button-container {
+        bottom: 15px;
+    }
+
+    .view-product-btn {
+        padding: 9px 20px;
+        font-size: 11px;
+        letter-spacing: 0.4px;
+        border-radius: 30px;
+    }
+
+    .close-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 18px;
+        top: 5px;
+        right: 5px;
+    }
+
+    .item__image {
+        inset: 2px;
+        border-radius: 5px;
+    }
+
+    .overlay--blur {
+        backdrop-filter: blur(2px);
+    }
+
+    .edge-fade {
+        height: 80px;
+    }
+}
+
+/* Ultra Small Phones - 360px to 399px */
+@media (max-width: 399px) and (min-width: 360px) {
+    .sphere-root {
+        --radius: 250px;
+        --viewer-pad: 25px;
+    }
+
+    .viewer .enlarge {
+        border-radius: 14px;
+    }
+
+    .viewer .enlarge img {
+        border-radius: 14px;
+    }
+
+    .enlarge-button-container {
+        bottom: 12px;
+    }
+
+    .view-product-btn {
+        padding: 8px 18px;
+        font-size: 10px;
+        letter-spacing: 0.3px;
+        border-radius: 25px;
+    }
+
+    .close-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 16px;
+        top: 4px;
+        right: 4px;
+    }
+
+    .item__image {
+        inset: 2px;
+        border-radius: 4px;
+    }
+
+    .edge-fade {
+        height: 60px;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateX(-50%) translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    }
+}
+
+/* Very Small Phones - 320px to 359px */
+@media (max-width: 359px) {
+    .sphere-root {
+        --radius: 220px;
+        --viewer-pad: 20px;
+    }
+
+    .viewer .enlarge {
+        border-radius: 12px;
+    }
+
+    .viewer .enlarge img {
+        border-radius: 12px;
+    }
+
+    .enlarge-button-container {
+        bottom: 10px;
+    }
+
+    .view-product-btn {
+        padding: 7px 16px;
+        font-size: 9px;
+        letter-spacing: 0.2px;
+        border-radius: 20px;
+    }
+
+    .close-btn {
+        width: 26px;
+        height: 26px;
+        font-size: 15px;
+        top: 3px;
+        right: 3px;
+        border-width: 1px;
+    }
+
+    .item__image {
+        inset: 1px;
+        border-radius: 3px;
+    }
+
+    .overlay--blur {
+        backdrop-filter: blur(1.5px);
+    }
+
+    .edge-fade {
+        height: 50px;
+    }
+
+    .viewer .scrim {
+        background: rgba(0, 0, 0, 0.6);
+    }
+}
+
+/* Landscape mode adjustments for mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+    .sphere-root {
+        --radius: 200px;
+        --viewer-pad: 15px;
+    }
+
+    .enlarge-button-container {
+        bottom: 8px;
+    }
+
+    .view-product-btn {
+        padding: 6px 14px;
+        font-size: 9px;
+    }
+
+    .close-btn {
+        width: 24px;
+        height: 24px;
+        font-size: 14px;
+    }
+
+    .edge-fade {
+        height: 40px;
+    }
+}
