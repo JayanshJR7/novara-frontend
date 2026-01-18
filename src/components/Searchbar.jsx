@@ -25,6 +25,33 @@ const SearchBar = () => {
         }
     }, [isOpen]);
 
+    /* -------------------- Lock body scroll when search is open -------------------- */
+    useEffect(() => {
+        if (isOpen) {
+            document.body.classList.add('search-modal-open');
+            // Also disable Lenis if it exists
+            const lenisInstance = window.lenis;
+            if (lenisInstance) {
+                lenisInstance.stop();
+            }
+        } else {
+            document.body.classList.remove('search-modal-open');
+            // Re-enable Lenis
+            const lenisInstance = window.lenis;
+            if (lenisInstance) {
+                lenisInstance.start();
+            }
+        }
+
+        return () => {
+            document.body.classList.remove('search-modal-open');
+            const lenisInstance = window.lenis;
+            if (lenisInstance) {
+                lenisInstance.start();
+            }
+        };
+    }, [isOpen]);
+
     /* -------------------- GSAP OPEN ANIMATION -------------------- */
     useEffect(() => {
         if (!isOpen) return;
@@ -78,7 +105,6 @@ const SearchBar = () => {
     /* -------------------- OPEN / CLOSE -------------------- */
     const handleOpen = () => {
         setIsOpen(true);
-        document.body.style.overflow = 'hidden';
     };
 
     const handleClose = () => {
@@ -102,7 +128,6 @@ const SearchBar = () => {
                 setIsOpen(false);
                 setQuery('');
                 setResults({ products: [], categories: [], suggestions: [] });
-                document.body.style.overflow = '';
             }
         });
     };
@@ -156,7 +181,7 @@ const SearchBar = () => {
                         </div>
 
                         {query.trim().length >= 2 && (
-                            <div className="search-results">
+                            <div className="search-results" data-lenis-prevent>
                                 {loading && (
                                     <div className="search-loading">
                                         <div className="spinner"></div>

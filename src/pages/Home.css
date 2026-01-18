@@ -346,6 +346,82 @@
   background: transparent;
 }
 
+/* Down Arrow Button for Dome Gallery */
+.dome-scroll-arrow {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 50px;
+  background: rgba(48, 7, 8, 0.8);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(218, 165, 32, 0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 10;
+  color: #daa520;
+  font-size: 24px;
+  box-shadow: 0 4px 20px rgba(48, 7, 8, 0.3);
+  animation: arrowBounce 2s ease-in-out infinite;
+}
+
+.dome-scroll-arrow:hover {
+  background: rgba(48, 7, 8, 1);
+  border-color: #daa520;
+  transform: translateX(-50%) scale(1.15);
+  box-shadow: 0 6px 30px rgba(218, 165, 32, 0.4);
+}
+
+.dome-scroll-arrow:active {
+  transform: translateX(-50%) scale(0.95);
+}
+
+.dome-scroll-arrow svg {
+  stroke-width: 2.5px;
+}
+
+/* Bounce Animation */
+@keyframes arrowBounce {
+
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  50% {
+    transform: translateX(-50%) translateY(8px);
+  }
+}
+
+/* Make sure dome wrapper has position relative */
+.dome-gallery-wrapper {
+  position: relative;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .dome-scroll-arrow {
+    width: 45px;
+    height: 45px;
+    font-size: 22px;
+    bottom: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .dome-scroll-arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    bottom: 15px;
+  }
+}
+
 /* Animation */
 @keyframes fadeInDown {
   from {
@@ -557,7 +633,7 @@
   .trending-now-section h2 {
     font-size: 3.5rem;
   }
-  
+
 }
 
 @media (max-width: 320px) {

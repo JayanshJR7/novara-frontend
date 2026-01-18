@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { productsAPI } from '../services/api';
 import ImageCarousel from '../components/ImageCarousel';
 import ProductCard from '../components/ProductCard';
@@ -12,10 +12,14 @@ import CouponShowcase from '../components/CouponShowcase';
 import ReviewsSection from '../components/ReviewSection';
 import DomeGallery from '../components/DomeGallery';
 import SplashCursor from '../components/SplashCursor';
+import { FiChevronDown } from 'react-icons/fi';
+
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [homeAnimReady, setHomeAnimReady] = useState(false);
+  
+  const featuredSectionRef = useRef(null);
 
   useEffect(() => {
     fetchFeaturedProducts();
@@ -41,6 +45,13 @@ const Home = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const scrollToFeatured = () => {
+    featuredSectionRef.current?.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'start'
+    });
   };
 
   return (
@@ -69,9 +80,17 @@ const Home = () => {
               openedImageHeight='500px'
             />
           </div>
+          {/* Down Arrow Button */}
+          <button 
+            className="dome-scroll-arrow" 
+            onClick={scrollToFeatured}
+            aria-label="Scroll to products"
+          >
+            <FiChevronDown />
+          </button>
         </div>
       </section>
-      <section className="featured-section">
+      <section className="featured-section" ref={featuredSectionRef}>
         <div className={`home-anim-featured ${homeAnimReady ? 'home-anim-visible' : ''}`}>
           {loading ? (
             <div className="loading home-anim-loading">
