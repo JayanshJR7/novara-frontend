@@ -349,7 +349,7 @@
 /* Down Arrow Button for Dome Gallery */
 .dome-scroll-arrow {
   position: absolute;
-  bottom: 30px;
+  bottom: 20%;
   left: 50%;
   transform: translateX(-50%);
   width: 50px;
@@ -524,6 +524,10 @@
     font-size: 2rem;
   }
 
+  .dome-scroll-arrow {
+    bottom: 18%;
+  }
+
   .brand-subtitle {
     font-size: 0.85rem;
   }
@@ -640,6 +644,10 @@
   .product-card {
     width: 140px;
     /* Minimum size */
+  }
+
+  .dome-scroll-arrow {
+    bottom: 18%;
   }
 
   .product-price {
