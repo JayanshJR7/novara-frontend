@@ -240,7 +240,6 @@ const Navbar = () => {
           <div className="navbar-left">
             <Link to="/" className="logo" ref={logoRef}>
               <img src="/images/LOGO.PNG" alt="Novara-Jewels Brand logo" className='navLogo' />
-              <span className="silver-pill">925 Silver</span>
             </Link>
           </div>
 

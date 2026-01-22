@@ -1,0 +1,613 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+/* ============================================
+   KEYFRAME ANIMATIONS
+   ============================================ */
+
+@keyframes gradientMove {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(10%, 10%) rotate(90deg); }
+  50% { transform: translate(0, 20%) rotate(180deg); }
+  75% { transform: translate(-10%, 10%) rotate(270deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+@keyframes slideProgress {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+@keyframes scrollMove {
+  0% { transform: translateY(0); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(20px); opacity: 0; }
+}
+
+@keyframes decorFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+  50% { transform: translate(30px, -30px) scale(1.2); opacity: 0.5; }
+}
+
+@keyframes decorFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.2; }
+  50% { transform: translate(-40px, 40px) scale(1.3); opacity: 0.4; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   BASE CAROUSEL STYLES
+   ============================================ */
+
+.carousel {
+  position: relative;
+  width: 100%;
+  height: 90vh;
+  min-height: 700px;
+  overflow: hidden;
+  background-color: #0a0a0a;
+}
+
+.background-gradient {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(139, 69, 19, 0.15) 0%, transparent 70%);
+  animation: gradientMove 20s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  min-height: 700px;
+  background-color: #0a0a0a;
+}
+
+.loader {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(139, 69, 19, 0.2);
+  border-top: 4px solid #8B4513;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* ============================================
+   CAROUSEL SLIDES
+   ============================================ */
+
+.carousel-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform: scale(0.9) translateX(-100px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+.carousel-slide.active {
+  opacity: 1;
+  transform: scale(1) translateX(0);
+  z-index: 2;
+}
+
+.carousel-slide.next {
+  transform: scale(0.9) translateX(-100px);
+}
+
+.carousel-slide.prev {
+  transform: scale(0.9) translateX(100px);
+}
+
+/* ============================================
+   IMAGE & OVERLAY
+   ============================================ */
+
+.image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.carousel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.1);
+  transition: transform 8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carousel-image.active {
+  transform: scale(1);
+}
+
+.carousel-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.2) 100%);
+}
+
+/* ============================================
+   DECORATIVE ELEMENTS
+   ============================================ */
+
+.decorative-circle-1 {
+  position: absolute;
+  top: 20%;
+  right: 15%;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  border: 2px solid rgba(139, 69, 19, 0.3);
+  animation: decorFloat1 8s ease-in-out infinite;
+}
+
+.decorative-circle-2 {
+  position: absolute;
+  bottom: 15%;
+  right: 25%;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  border: 1px solid rgba(139, 69, 19, 0.2);
+  animation: decorFloat2 10s ease-in-out infinite;
+}
+
+.decorative-line {
+  position: absolute;
+  top: 50%;
+  right: 10%;
+  width: 200px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139, 69, 19, 0.5), transparent);
+  transform: translateY(-50%) rotate(-45deg);
+}
+
+/* ============================================
+   CONTENT SECTION
+   ============================================ */
+
+.content-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  z-index: 3;
+}
+
+.carousel-content {
+  max-width: 700px;
+  padding: 0 4rem;
+  color: white;
+}
+
+/* ============================================
+   TEXT & ORNAMENTS
+   ============================================ */
+
+.ornament-top {
+  font-size: 28px;
+  color: #8B4513;
+  margin-bottom: 20px;
+  animation: float 3s ease-in-out infinite;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+}
+
+.ornament-top.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.carousel-title {
+  font-family: 'Dancing Script', cursive;
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.2;
+  text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+}
+
+.carousel-title.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.carousel-subtitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 2.5rem;
+  letter-spacing: 0.5px;
+  line-height: 1.6;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
+}
+
+.carousel-subtitle.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================
+   CTA BUTTON
+   ============================================ */
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 36px;
+  background: linear-gradient(135deg, #8B4513 0%, #654321 100%);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(139, 69, 19, 0.3);
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.5s;
+}
+
+.cta-button.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(139, 69, 19, 0.4);
+}
+
+.cta-text {
+  position: relative;
+  z-index: 2;
+  font-size: 0.8rem;
+}
+
+.cta-arrow {
+  font-size: 20px;
+  transition: transform 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.cta-button:hover .cta-arrow {
+  transform: translateX(5px);
+}
+
+/* ============================================
+   BOTTOM ORNAMENTS
+   ============================================ */
+
+.ornament-bottom {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 3rem;
+  opacity: 0;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.6s;
+}
+
+.ornament-bottom.active {
+  opacity: 1;
+}
+
+.ornament-line {
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139, 69, 19, 0.8), transparent);
+}
+
+.ornament-diamond {
+  font-size: 12px;
+  color: #8B4513;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* ============================================
+   NAVIGATION CONTROLS
+   ============================================ */
+
+.control-prev,
+.control-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+  padding: 0;
+  transition: transform 0.3s ease;
+}
+
+.control-prev {
+  left: 2rem;
+}
+
+.control-next {
+  right: 2rem;
+}
+
+.control-icon {
+  font-size: 28px;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+.control-prev:hover,
+.control-next:hover {
+  transform: translateY(-50%) scale(1.1);
+}
+
+.control-prev:disabled,
+.control-next:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================================
+   DOTS NAVIGATION
+   ============================================ */
+
+.dots-container {
+  position: absolute;
+  bottom: 3rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  z-index: 10;
+}
+
+.dots-wrapper {
+  display: flex;
+  gap: 12px;
+}
+
+.dot {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  border: none;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  padding: 0;
+  overflow: hidden;
+}
+
+.dot:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.dot.active {
+  width: 40px;
+  border-radius: 10px;
+  background: rgba(139, 69, 19, 0.5);
+}
+
+.dot:disabled {
+  cursor: not-allowed;
+}
+
+.dot-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #8B4513, #654321);
+  animation: slideProgress 5s linear;
+  border-radius: 10px;
+}
+
+/* ============================================
+   SCROLL INDICATOR
+   ============================================ */
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 3rem;
+  right: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  z-index: 10;
+}
+
+.scroll-line {
+  width: 2px;
+  height: 40px;
+  background: linear-gradient(to bottom, transparent, rgba(139, 69, 19, 0.8));
+  position: relative;
+  overflow: hidden;
+}
+
+.scroll-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  animation: scrollMove 2s ease-in-out infinite;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 968px) {
+  .carousel {
+    height: 80vh;
+    min-height: 600px;
+  }
+
+  .carousel-content {
+    padding: 0 2rem;
+  }
+  
+  .carousel-title {
+    font-size: 2.5rem;
+  }
+  
+  .carousel-subtitle {
+    font-size: 1rem;
+  }
+
+  .decorative-circle-1,
+  .decorative-circle-2 {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel {
+    height: 70vh;
+    min-height: 500px;
+  }
+
+  .control-prev {
+    left: 1rem;
+  }
+
+  .control-next {
+    right: 1rem;
+  }
+
+  .scroll-indicator {
+    right: 1.5rem;
+    bottom: 2rem;
+  }
+
+  .dots-container {
+    bottom: 2rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .carousel {
+    height: 60vh;
+    min-height: 400px;
+  }
+
+  .carousel-content {
+    padding: 0 1.5rem;
+  }
+  
+  .carousel-title {
+    font-size: 1.8rem;
+  }
+  
+  .carousel-subtitle {
+    font-size: 0.9rem;
+  }
+  
+  .cta-button {
+    padding: 10px 20px;
+    font-size: 0.85rem;
+  }
+
+  .cta-text {
+    font-size: 0.75rem;
+  }
+
+  .control-prev,
+  .control-next {
+    display: none;
+  }
+
+  .scroll-indicator {
+    display: none;
+  }
+
+  .ornament-top,
+  .ornament-bottom {
+    display: none;
+  }
+}
+
+@media (max-width: 375px) {
+  .carousel-content {
+    padding: 0 1rem;
+  }
+
+  .carousel-title {
+    font-size: 1.5rem;
+    line-height: 1.2;
+    max-width: 100%;
+    word-break: break-word;
+    text-align: left;
+  }
+
+  .carousel-subtitle {
+    font-size: 0.85rem;
+  }
+  
+  .cta-button {
+    padding: 8px 16px;
+    font-size: 0.75rem;
+  }
+
+  .cta-text {
+    font-size: 0.7rem;
+  }
+
+  .dots-container {
+    bottom: 1.5rem;
+  }
+}

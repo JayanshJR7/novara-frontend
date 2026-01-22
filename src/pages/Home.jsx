@@ -71,6 +71,7 @@ const Home = () => {
     <div className="home-page">
       <SplashCursor />
       <Navbar />
+      <span className="silver-pill">925 Silver</span>
       <section className="hero-section">
         <div className={`home-anim-hero ${homeAnimReady ? 'home-anim-visible' : ''}`}>
           <ImageCarousel />

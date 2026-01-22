@@ -144,7 +144,7 @@ const HeroCarousel = () => {
                 </div>
               </div>
 
-              <div style={styles.contentWrapper}>
+              <div style={styles.contentWrapper} className='hidewrapper'>
                 <div style={styles.carouselContent}>
                   <div style={{
                     ...styles.ornamentTop,
@@ -156,7 +156,7 @@ const HeroCarousel = () => {
                     ...styles.title,
                     opacity: isActive ? 1 : 0,
                     transform: isActive ? 'translateY(0)' : 'translateY(30px)',
-                  }}>
+                  }} className='mobiletitle'>
                     {slide.title}
                   </h2>
 
@@ -164,11 +164,11 @@ const HeroCarousel = () => {
                     ...styles.subtitle,
                     opacity: isActive ? 1 : 0,
                     transform: isActive ? 'translateY(0)' : 'translateY(30px)',
-                  }}>
+                  }} className='mobilesubtitle'>
                     {slide.subtitle}
                   </p>
 
-                  <button style={{
+                  <button className='mobilectaButton' style={{
                     ...styles.ctaButton,
                     opacity: isActive ? 1 : 0,
                     transform: isActive ? 'translateY(0)' : 'translateY(30px)',
@@ -178,7 +178,6 @@ const HeroCarousel = () => {
                     <span style={styles.ctaText}>Explore Collection</span>
                     <span style={styles.ctaArrow}>→</span>
                   </button>
-
                   <div style={{
                     ...styles.ornamentBottom,
                     opacity: isActive ? 1 : 0,
@@ -193,7 +192,7 @@ const HeroCarousel = () => {
           );
         })}
 
-        <button
+        <button className='mobileleft'
           style={styles.controlPrev}
           onClick={prevSlide}
           disabled={isTransitioning}
@@ -201,7 +200,7 @@ const HeroCarousel = () => {
           <FiChevronLeft style={styles.controlIcon} />
         </button>
 
-        <button
+        <button className='mobileright'
           style={styles.controlNext}
           onClick={nextSlide}
           disabled={isTransitioning}
@@ -305,30 +304,52 @@ const HeroCarousel = () => {
         }
 @media (max-width: 968px) {
   .carousel-content h2 {
-    font-size: 2.5rem !important;
+    font-size: 1rem !important;
   }
   .carousel-content p {
-    font-size: 1rem !important;
+    font-size: 0.8rem !important;
   }
 }
 
 @media (max-width: 576px) {
   .carousel-content h2 {
-    font-size: 1.8rem !important;
+    font-size: 1rem !important;
   }
   .carousel-content p {
-    font-size: 0.9rem !important;
+    font-size: 0.8rem !important;
   }
   .cta-button {
     padding: 10px 20px !important;
     font-size: 0.85rem !important;
   }
+  .carousel-content {
+    display: none !important;
+  }
+  .mobiletitle {
+    font-size: 1rem !important;
+  }
+  .mobilesubtitle {
+    font-size: 0.8rem !important;
+  }
+  .mobilectaButton {
+    scale: 0.7 !important;
+    position :absolute !important;
+    left: 0% !important;
+  }
+  .mobileleft {
+    position :absolute !important;
+    left: 0% !important;
+  }
+  .mobileright {
+    position :absolute !important;
+    right: 0% !important;
+  }
 }
 
 @media (max-width: 375px) {
   .carousel-content h2 {
-    font-size: 1.5rem !important;
-    line-height: 1.2 !important;
+    font-size: 1rem !important;
+    line-height: 1 !important;
     max-width: 100% !important;
     word-break: break-word;
     text-align: left;
@@ -473,7 +494,7 @@ const styles = {
   },
   title: {
     fontFamily: "'Dancing Script', cursive",
-    fontSize: '3.5rem',
+    fontSize: '3rem',
     fontWeight: 700,
     color: '#fff',
     margin: '0 0 1.5rem 0',
