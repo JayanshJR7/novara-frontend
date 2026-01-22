@@ -47,6 +47,7 @@ export const productsAPI = {
     const response = await api.get(`/products?${params.toString()}`);
     return response.data;
   },
+  
   getTrending: async () => {
     const response = await api.get('/products/trending');
     return response.data;

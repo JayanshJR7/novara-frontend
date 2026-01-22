@@ -409,7 +409,7 @@
     width: 45px;
     height: 45px;
     font-size: 22px;
-    bottom: 20px;
+    bottom: 24%;
   }
 }
 
@@ -418,7 +418,7 @@
     width: 40px;
     height: 40px;
     font-size: 20px;
-    bottom: 15px;
+    bottom: 24%;
   }
 }
 
@@ -525,7 +525,7 @@
   }
 
   .dome-scroll-arrow {
-    bottom: 18%;
+    bottom: 22%;
   }
 
   .brand-subtitle {
@@ -647,7 +647,7 @@
   }
 
   .dome-scroll-arrow {
-    bottom: 18%;
+    bottom: 23%;
   }
 
   .product-price {
