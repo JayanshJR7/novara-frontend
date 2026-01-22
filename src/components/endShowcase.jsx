@@ -213,7 +213,6 @@ const JewelryShowcase = () => {
 
                     <div style={styles.priceRow}>
                       <div style={styles.priceContainer}>
-                        <span style={styles.priceLabel}>From</span>
                         <span style={{
                           ...styles.price,
                           color: isHovered ? '#8B4513' : '#300708',

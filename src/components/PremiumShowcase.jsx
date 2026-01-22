@@ -19,7 +19,7 @@ const PremiumShowcase = () => {
     try {
       setLoading(true);
       const data = await productsAPI.getTrending();
-      setPremiumProducts(data.products.slice(0, 20));
+      setPremiumProducts(data.products.slice(0, 12));
     } catch (err) {
       console.error('Failed to fetch premium products:', err);
     } finally {
@@ -48,21 +48,19 @@ const PremiumShowcase = () => {
 
       if (isMobile) {
         return premiumProducts.map((_, i) => ({
-          top: `${15 + i * 110}px`, // REDUCED from 140 to 110
+          top: `${15 + i * 110}px`,
           left: i % 2 === 0 ? '5%' : '53%',
           size: i % 3 === 0 ? 'medium' : 'small',
         }));
       }
 
-      // Small Mobile (< 450px) - 2 columns, tighter spacing
       if (isSmallMobile) {
         return premiumProducts.map((_, i) => ({
-          top: `${10 + i * 95}px`, // REDUCED from 120 to 95
+          top: `${10 + i * 95}px`, 
           left: i % 2 === 0 ? '3%' : '52%',
           size: 'small',
         }));
       }
-      // Desktop - 4-5 per row with varied positioning
       const desktopPositions = [];
 
       for (let i = 0; i < 20; i++) {

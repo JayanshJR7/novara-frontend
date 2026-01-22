@@ -179,12 +179,8 @@ const ShippingPolicy = () => {
 
         <section className="policy-section">
           <h2>2. Shipping Charges</h2>
-          <p>Shipping charges vary based on order value and location:</p>
           <ul>
-            <li><strong>Free Shipping:</strong> Orders above ₹2,000</li>
-            <li><strong>Standard Shipping:</strong> ₹99 for orders below ₹2,000 (metro cities)</li>
-            <li><strong>Remote Areas:</strong> ₹149 for non-metro and remote locations</li>
-            <li>Shipping charges are calculated automatically at checkout based on delivery location</li>
+            <li>Free delivery on all orders</li>
           </ul>
         </section>
 

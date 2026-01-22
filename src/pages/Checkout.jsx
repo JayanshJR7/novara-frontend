@@ -7,18 +7,26 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { Country, State, City } from 'country-state-city';
 import './Checkout.css';
+import { useLocation } from 'react-router-dom';
 
 const Checkout = () => {
   const { user, isAuthenticated } = useAuth();
   const { cart, cartTotal, clearCart } = useCart();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const buyNowMode = location.state?.buyNowMode;
+  const buyNowItem = location.state?.buyNowItem;
+
+  const checkoutItems = buyNowMode && buyNowItem ? [buyNowItem] : cart;
+  const checkoutTotal = buyNowMode && buyNowItem ? buyNowItem.itemTotal : cartTotal;
 
   const [formData, setFormData] = useState({
     customerName: '',
     email: '',
     phone: '',
     address: '',
-    country: 'IN', // Default to India
+    country: 'IN',
     state: '',
     city: '',
     zipCode: ''
@@ -61,15 +69,14 @@ const Checkout = () => {
   }, [formData.state]);
 
   const calculateDeliveryCharge = () => {
-    // Free delivery for orders above ₹5000
-    if (cartTotal >= 5000) {
+    const total = buyNowMode ? checkoutTotal : cartTotal;
+
+    if (total >= 5000) {
       return 0;
     }
-    // ₹300 for orders above ₹2000
-    if (cartTotal >= 2000) {
+    if (total >= 2000) {
       return 300;
     }
-    // ₹500 for all other orders
     return 500;
   };
 
@@ -87,7 +94,8 @@ const Checkout = () => {
       return;
     }
 
-    if (cart.length === 0) {
+    // ✅ Allow checkout if either cart has items OR buyNow mode is active
+    if (!buyNowMode && cart.length === 0) {
       navigate('/cart');
       return;
     }
@@ -99,7 +107,7 @@ const Checkout = () => {
         email: user.email || ''
       }));
     }
-  }, [isAuthenticated, user, cart, navigate]);
+  }, [isAuthenticated, user, cart, navigate, buyNowMode]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -132,9 +140,8 @@ const Checkout = () => {
         customerName: formData.customerName,
         email: formData.email,
         phone: formData.phone,
-        // ✅ Send shippingAddress as an object (matching Order model schema)
         shippingAddress: {
-          address: formData.address,  // Street address only
+          address: formData.address,
           city: formData.city,
           state: stateName,
           country: countryName,
@@ -144,7 +151,12 @@ const Checkout = () => {
         couponCode: appliedCoupon ? appliedCoupon.code : null,
         discount: discount,
         deliveryCharge: deliveryCharge,
-        items: cart.map(item => ({
+        items: buyNowMode ? [
+          {
+            product: buyNowItem.product._id,
+            quantity: buyNowItem.quantity
+          }
+        ] : cart.map(item => ({
           product: item.product._id,
           quantity: item.quantity
         }))
@@ -180,7 +192,8 @@ const Checkout = () => {
     setCouponError('');
 
     try {
-      const response = await couponsAPI.validate(couponCode.toUpperCase(), cartTotal);
+      const total = buyNowMode ? checkoutTotal : cartTotal;
+      const response = await couponsAPI.validate(couponCode.toUpperCase(), total);
 
       if (response.valid) {
         setAppliedCoupon(response.coupon);
@@ -203,10 +216,10 @@ const Checkout = () => {
     setCouponError('');
   };
 
-  // Calculate final total: Subtotal - Discount + Delivery Charge
   const getFinalTotal = () => {
     const deliveryCharge = calculateDeliveryCharge();
-    const subtotalAfterDiscount = Math.max(0, cartTotal - discount);
+    const total = buyNowMode ? checkoutTotal : cartTotal;
+    const subtotalAfterDiscount = Math.max(0, total - discount);
     return subtotalAfterDiscount + deliveryCharge;
   };
 
@@ -610,11 +623,11 @@ const Checkout = () => {
               <h3>Order Summary</h3>
 
               <div className="summary-items">
-                {cart.map((item) => (
+                {checkoutItems.map((item) => (
                   <div key={item.product._id} className="summary-item">
-                    <img src={item.product.itemImages[0]} alt={item.product.itemName} />
+                    <img src={item.product.itemImages?.[0] || item.product.itemImage} alt={item.product.itemName || item.product.itemname} />
                     <div className="item-info">
-                      <p className="item-name">{item.product.itemName}</p>
+                      <p className="item-name">{item.product.itemName || item.product.itemname}</p>
                       <p className="item-qty">Qty: {item.quantity}</p>
                     </div>
                     <p className="item-price">{formatCurrency(item.itemTotal)}</p>
@@ -671,7 +684,7 @@ const Checkout = () => {
               {/* Price Breakdown */}
               <div className="summary-row">
                 <span>Subtotal</span>
-                <span>{formatCurrency(cartTotal)}</span>
+                <span>{formatCurrency(checkoutTotal)}</span>
               </div>
 
               {appliedCoupon && (
@@ -691,12 +704,12 @@ const Checkout = () => {
               </div>
 
               <div className="summary-divider"></div>
-              {cartTotal < 5000 && (
+              {checkoutTotal < 5000 && (
                 <div className="delivery-info-note">
                   <p style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
-                    💡 {cartTotal >= 2000
-                      ? `Add ₹${(5000 - cartTotal).toFixed(2)} more for FREE delivery!`
-                      : `Add ₹${(2000 - cartTotal).toFixed(2)} more to reduce delivery charge to ₹300`
+                    💡 {checkoutTotal >= 2000
+                      ? `Add ₹${(5000 - checkoutTotal).toFixed(2)} more for FREE delivery!`
+                      : `Add ₹${(2000 - checkoutTotal).toFixed(2)} more to reduce delivery charge to ₹300`
                     }
                   </p>
                 </div>

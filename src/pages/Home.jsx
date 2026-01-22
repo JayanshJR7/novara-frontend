@@ -18,8 +18,21 @@ const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [homeAnimReady, setHomeAnimReady] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);  // ← Add this
   
   const featuredSectionRef = useRef(null);
+
+  // ← Add this useEffect
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     fetchFeaturedProducts();
@@ -63,33 +76,37 @@ const Home = () => {
           <ImageCarousel />
         </div>
       </section>
-      <section className='Mydome'>
-        <div className="dome-gallery-wrapper">
-          <div className="dome-gallery-header">
-            <h2 className="dome-gallery-title">The Novara Collection</h2>
-            <p className="dome-gallery-subtitle">Where artistry meets legacy</p>
+      
+      {/* ← Conditionally render DomeGallery */}
+      {!isMobile && (
+        <section className='Mydome'>
+          <div className="dome-gallery-wrapper">
+            <div className="dome-gallery-header">
+              <h2 className="dome-gallery-title">The Novara Collection</h2>
+              <p className="dome-gallery-subtitle">Where artistry meets legacy</p>
+            </div>
+            <div className="dome-gallery-container">
+              <DomeGallery
+                fit={1}
+                minRadius={1000}
+                maxVerticalRotationDeg={15}
+                dragDampening={4.2}
+                grayscale={false}
+                openedImageWidth='500px'
+                openedImageHeight='500px'
+              />
+            </div>
+            <button 
+              className="dome-scroll-arrow" 
+              onClick={scrollToFeatured}
+              aria-label="Scroll to products"
+            >
+              <FiChevronDown />
+            </button>
           </div>
-          <div className="dome-gallery-container">
-            <DomeGallery
-              fit={1}
-              minRadius={1000}
-              maxVerticalRotationDeg={15}
-              dragDampening={4.2}
-              grayscale={false}
-              openedImageWidth='500px'
-              openedImageHeight='500px'
-            />
-          </div>
-          {/* Down Arrow Button */}
-          <button 
-            className="dome-scroll-arrow" 
-            onClick={scrollToFeatured}
-            aria-label="Scroll to products"
-          >
-            <FiChevronDown />
-          </button>
-        </div>
-      </section>
+        </section>
+      )}
+      
       <section className="featured-section" ref={featuredSectionRef}>
         <div className={`home-anim-featured ${homeAnimReady ? 'home-anim-visible' : ''}`}>
           {loading ? (

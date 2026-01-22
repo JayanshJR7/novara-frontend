@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { FiHeart, FiShoppingBag, FiArrowLeft, FiZoomIn, FiCheck, FiMaximize2, FiX, FiChevronLeft, FiChevronRight, FiZoomOut } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 
 import './ProductDetail.css';
 
@@ -100,6 +101,36 @@ const ProductDetail = () => {
     } finally {
       setLoading(false);
     }
+  };
+  const handleBuyNow = () => {
+    if (!isAuthenticated) {
+      toast.warning('Please login to checkout', {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      navigate('/login');
+      return;
+    }
+
+    if (!product.inStock) {
+      toast.error('Product is out of stock', {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      return;
+    }
+
+    // Direct checkout with this product only - no cart modification
+    navigate('/checkout', {
+      state: {
+        buyNowMode: true,
+        buyNowItem: {
+          product: product,
+          quantity: quantity,
+          itemTotal: (product.calculatedPrice || product.finalPrice || product.basePrice) * quantity
+        }
+      }
+    });
   };
 
   const handleAddToCart = async () => {
@@ -323,6 +354,7 @@ const ProductDetail = () => {
   if (!product) {
     return (
       <div className="product-detail-novara">
+        <Navbar />
         <div className="error-state">
           <h2>Product Not Found</h2>
           <p>The product you're looking for doesn't exist</p>
@@ -371,6 +403,7 @@ const ProductDetail = () => {
 
   return (
     <div className="product-detail-novara">
+      <Navbar />
       <div className="detail-container">
 
         {/* Breadcrumb */}
@@ -513,7 +546,6 @@ const ProductDetail = () => {
                 </div>
               </div>
             )}
-
             {/* Actions */}
             <div className="actions-section-elegant">
               <button
@@ -532,6 +564,16 @@ const ProductDetail = () => {
                 <FiHeart fill={inWishlist ? 'currentColor' : 'none'} />
               </button>
             </div>
+
+            {/* Buy Now Button */}
+            {product.inStock && (
+              <button
+                className="btn-buy-now-elegant"
+                onClick={handleBuyNow}
+              >
+                ✨ Make It Yours Instantly
+              </button>
+            )}
 
             {/* Trust Badges */}
             <div className="trust-section-elegant">
