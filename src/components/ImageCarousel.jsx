@@ -303,51 +303,55 @@ const HeroCarousel = () => {
         .control-inner:hover {
           transform: scale(1.1);
         }
+@media (max-width: 968px) {
+  .carousel-content h2 {
+    font-size: 2.5rem !important;
+  }
+  .carousel-content p {
+    font-size: 1rem !important;
+  }
+}
 
-        @media (max-width: 968px) {
-          .carousel-content h2 {
-            font-size: 3rem !important;
-          }
-          .carousel-content p {
-            font-size: 1.1rem !important;
-          }
-        }
+@media (max-width: 576px) {
+  .carousel-content h2 {
+    font-size: 1.8rem !important;
+  }
+  .carousel-content p {
+    font-size: 0.9rem !important;
+  }
+  .cta-button {
+    padding: 10px 20px !important;
+    font-size: 0.85rem !important;
+  }
+}
 
-        @media (max-width: 576px) {
-          .carousel-content h2 {
-            font-size: 2rem !important;
-          }
-          .carousel-content p {
-            font-size: 1rem !important;
-          }
-          .cta-button {
-            padding: 12px 24px !important;
-            font-size: 0.9rem !important;
-          }
-        }
-        @media (max-width: 375px) {
-          .carousel-content h2 {
-            font-size: 2rem !important;
-            line-height: 1.2 !important;
-            max-width: 100% !important;
-            word-break: break-word;
-            text-align: left;
-          }
+@media (max-width: 375px) {
+  .carousel-content h2 {
+    font-size: 1.5rem !important;
+    line-height: 1.2 !important;
+    max-width: 100% !important;
+    word-break: break-word;
+    text-align: left;
+  }
 
-          .carousel-content p {
-            font-size: 0.95rem !important;
-          }
+  .carousel-content p {
+    font-size: 0.85rem !important;
+  }
 
-          .title {
-            font-size: 2rem !important;
-          }
-        }
+  .title {
+    font-size: 1.1rem !important;
+  }
+  
+  .cta-button {
+    padding: 8px 16px !important;
+    font-size: 0.75rem !important;
+  }
+}
       `}</style>
     </div>
   );
 };
 
-// Styles object remains the same as before
 const styles = {
   carousel: {
     position: 'relative',
@@ -469,7 +473,7 @@ const styles = {
   },
   title: {
     fontFamily: "'Dancing Script', cursive",
-    fontSize: '4rem',
+    fontSize: '3.5rem',
     fontWeight: 700,
     color: '#fff',
     margin: '0 0 1.5rem 0',
@@ -479,7 +483,7 @@ const styles = {
   },
   subtitle: {
     fontFamily: "'Poppins', sans-serif",
-    fontSize: '1.25rem',
+    fontSize: '0.9rem',
     fontWeight: 300,
     color: 'rgba(255, 255, 255, 0.9)',
     marginBottom: '2.5rem',
@@ -510,6 +514,7 @@ const styles = {
   ctaText: {
     position: 'relative',
     zIndex: 2,
+    fontSize: '0.8rem',
   },
   ctaArrow: {
     fontSize: '20px',

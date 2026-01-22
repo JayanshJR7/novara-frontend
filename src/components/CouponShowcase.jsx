@@ -88,9 +88,9 @@ const CouponShowcase = () => {
 
             {/* Premium Carousel Display */}
             <div style={styles.carouselContainer} ref={carouselRef}>
-                <button 
-                    onClick={prevCoupon} 
-                    style={{...styles.navButton, ...styles.navButtonLeft}}
+                <button
+                    onClick={prevCoupon}
+                    style={{ ...styles.navButton, ...styles.navButtonLeft }}
                     onMouseEnter={(e) => e.currentTarget.style.background = styles.navButtonHover.background}
                     onMouseLeave={(e) => e.currentTarget.style.background = styles.navButton.background}
                 >
@@ -101,7 +101,7 @@ const CouponShowcase = () => {
                     {coupons.map((coupon, index) => {
                         const offset = index - activeIndex;
                         const isActive = index === activeIndex;
-                        
+
                         return (
                             <div
                                 key={coupon._id}
@@ -113,7 +113,7 @@ const CouponShowcase = () => {
                                     pointerEvents: isActive ? 'all' : 'none'
                                 }}
                             >
-                                <div 
+                                <div
                                     style={{
                                         ...styles.couponCard,
                                         transform: isFlipped[coupon._id] ? 'rotateY(180deg)' : 'rotateY(0deg)'
@@ -127,7 +127,7 @@ const CouponShowcase = () => {
                                                 <div key={i} style={styles.patternLine} />
                                             ))}
                                         </div>
-                                        
+
                                         <div style={styles.cardContent}>
                                             <div style={styles.discountCircle}>
                                                 <div style={styles.discountInner}>
@@ -135,8 +135,8 @@ const CouponShowcase = () => {
                                                         {coupon.discountType === 'percentage' ? <FiPercent size={36} /> : <FiTag size={36} />}
                                                     </div>
                                                     <div style={styles.discountAmount}>
-                                                        {coupon.discountType === 'percentage' 
-                                                            ? `${coupon.discountValue}%` 
+                                                        {coupon.discountType === 'percentage'
+                                                            ? `${coupon.discountValue}%`
                                                             : `₹${coupon.discountValue}`
                                                         }
                                                     </div>
@@ -183,10 +183,10 @@ const CouponShowcase = () => {
                                         </div>
 
                                         <div style={styles.cornerDecor}>
-                                            <div style={{...styles.corner, ...styles.cornerTL}} />
-                                            <div style={{...styles.corner, ...styles.cornerTR}} />
-                                            <div style={{...styles.corner, ...styles.cornerBL}} />
-                                            <div style={{...styles.corner, ...styles.cornerBR}} />
+                                            <div style={{ ...styles.corner, ...styles.cornerTL }} />
+                                            <div style={{ ...styles.corner, ...styles.cornerTR }} />
+                                            <div style={{ ...styles.corner, ...styles.cornerBL }} />
+                                            <div style={{ ...styles.corner, ...styles.cornerBR }} />
                                         </div>
                                     </div>
 
@@ -194,7 +194,7 @@ const CouponShowcase = () => {
                                     <div style={styles.cardBack}>
                                         <div style={styles.backContent}>
                                             <h4 style={styles.backTitle}>Offer Details</h4>
-                                            
+
                                             <div style={styles.detailsList}>
                                                 <div style={styles.detailItem}>
                                                     <span style={styles.detailLabel}>Minimum Order</span>
@@ -202,14 +202,14 @@ const CouponShowcase = () => {
                                                         {coupon.minOrderAmount > 0 ? `₹${coupon.minOrderAmount.toLocaleString()}` : 'No minimum'}
                                                     </span>
                                                 </div>
-                                                
+
                                                 {coupon.maxDiscount && (
                                                     <div style={styles.detailItem}>
                                                         <span style={styles.detailLabel}>Maximum Discount</span>
                                                         <span style={styles.detailValue}>₹{coupon.maxDiscount.toLocaleString()}</span>
                                                     </div>
                                                 )}
-                                                
+
                                                 <div style={styles.detailItem}>
                                                     <span style={styles.detailLabel}>Valid Until</span>
                                                     <span style={styles.detailValue}>
@@ -220,11 +220,11 @@ const CouponShowcase = () => {
                                                         })}
                                                     </span>
                                                 </div>
-                                                
+
                                                 {coupon.usageLimit && (
                                                     <div style={styles.detailItem}>
                                                         <span style={styles.detailLabel}>Remaining Uses</span>
-                                                        <span style={{...styles.detailValue, color: '#d4af37'}}>
+                                                        <span style={{ ...styles.detailValue, color: '#d4af37' }}>
                                                             {coupon.usageLimit - coupon.usedCount} of {coupon.usageLimit}
                                                         </span>
                                                     </div>
@@ -242,10 +242,10 @@ const CouponShowcase = () => {
                                         </div>
 
                                         <div style={styles.cornerDecor}>
-                                            <div style={{...styles.corner, ...styles.cornerTL}} />
-                                            <div style={{...styles.corner, ...styles.cornerTR}} />
-                                            <div style={{...styles.corner, ...styles.cornerBL}} />
-                                            <div style={{...styles.corner, ...styles.cornerBR}} />
+                                            <div style={{ ...styles.corner, ...styles.cornerTL }} />
+                                            <div style={{ ...styles.corner, ...styles.cornerTR }} />
+                                            <div style={{ ...styles.corner, ...styles.cornerBL }} />
+                                            <div style={{ ...styles.corner, ...styles.cornerBR }} />
                                         </div>
                                     </div>
                                 </div>
@@ -254,9 +254,9 @@ const CouponShowcase = () => {
                     })}
                 </div>
 
-                <button 
-                    onClick={nextCoupon} 
-                    style={{...styles.navButton, ...styles.navButtonRight}}
+                <button
+                    onClick={nextCoupon}
+                    style={{ ...styles.navButton, ...styles.navButtonRight }}
                     onMouseEnter={(e) => e.currentTarget.style.background = styles.navButtonHover.background}
                     onMouseLeave={(e) => e.currentTarget.style.background = styles.navButton.background}
                 >
@@ -317,6 +317,19 @@ const keyframes = `
     @keyframes fadeInUp {
         from { opacity: 0; transform: translateY(30px); }
         to { opacity: 1; transform: translateY(0); }
+    }
+        @media (max-width: 768px) {
+        .nav-button {
+            width: 40px !important;
+            height: 40px !important;
+            background: transparent !important;
+            border: none !important;
+            backdrop-filter: none !important;
+        }
+        
+        .nav-button svg {
+            font-size: 24px !important;
+        }
     }
 `;
 
@@ -656,29 +669,28 @@ const styles = {
     },
     navButton: {
         position: 'absolute',
+        background:'transparent',
         zIndex: 20,
         width: '60px',
+        color: '#d4af37',
         height: '60px',
         borderRadius: '50%',
-        border: '2px solid rgba(212, 175, 55, 0.5)',
-        background: 'rgba(212, 175, 55, 0.1)',
-        color: '#d4af37',
+        border: 'None',
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         transition: 'all 0.3s ease',
-        backdropFilter: 'blur(10px)'
     },
     navButtonHover: {
         background: 'rgba(212, 175, 55, 0.2)',
         transform: 'scale(1.1)'
     },
     navButtonLeft: {
-        left: '50px'
+        left: '0%'
     },
     navButtonRight: {
-        right: '50px'
+        right: '0%'
     },
     dotsContainer: {
         display: 'flex',

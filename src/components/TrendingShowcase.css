@@ -38,7 +38,7 @@
 .showcase-track {
   display: flex;
   gap: 2rem;
-  animation: scroll 40s linear infinite;
+  animation: scroll 100s linear infinite;
   width: fit-content;
 }
 
