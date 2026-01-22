@@ -75,9 +75,9 @@ const Checkout = () => {
       return 0;
     }
     if (total >= 2000) {
-      return 300;
+      return 0;
     }
-    return 500;
+    return 0;
   };
 
   // Format number with Indian comma style (₹1,00,000)
