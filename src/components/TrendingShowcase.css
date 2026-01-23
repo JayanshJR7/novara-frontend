@@ -194,7 +194,7 @@
 
   .showcase-track {
     gap: 1.5rem;
-    animation: scroll 32s linear infinite;
+    animation: scroll 100s linear infinite;
   }
 
   .showcase-card {
@@ -241,7 +241,7 @@
 
   .showcase-track {
     gap: 0.8rem;
-    animation: scroll 24s linear infinite;
+    animation: scroll 150s linear infinite;
   }
 
   .showcase-card {
