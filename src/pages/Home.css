@@ -386,6 +386,87 @@
   stroke-width: 2.5px;
 }
 
+.hero-silver-heading {
+  position: absolute;
+  bottom: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "Dancing Script", cursive;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 4rem;
+  color: #c0c0c0;
+  margin: 0;
+  letter-spacing: 2px;
+  text-align: center;
+  z-index: 10;
+
+  /* Silver glow effect */
+  text-shadow:
+    0 0 10px rgba(192, 192, 192, 0.8),
+    0 0 20px rgba(192, 192, 192, 0.6),
+    0 0 30px rgba(192, 192, 192, 0.4),
+    2px 2px 4px rgba(0, 0, 0, 0.3);
+
+  /* Fade in/out animation */
+  animation: gentleFade 3s ease-in-out infinite;
+}
+
+@keyframes gentleFade {
+
+  0%,
+  100% {
+    opacity: 0.4;
+    text-shadow:
+      0 0 5px rgba(192, 192, 192, 0.6),
+      0 0 10px rgba(192, 192, 192, 0.4),
+      2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  50% {
+    opacity: 1;
+    text-shadow:
+      0 0 15px rgba(192, 192, 192, 1),
+      0 0 25px rgba(192, 192, 192, 0.8),
+      0 0 35px rgba(192, 192, 192, 0.6),
+      2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 968px) {
+  .hero-silver-heading {
+    font-size: 4rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-silver-heading {
+    font-size: 3.5rem;
+    bottom: 6%;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-silver-heading {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .hero-silver-heading {
+    font-size: 2rem;
+    bottom: 8%;
+  }
+}
+
+@media (max-width: 360px) {
+  .hero-silver-heading {
+    font-size: 2rem;
+  }
+}
+
 /* Bounce Animation */
 @keyframes arrowBounce {
 
@@ -402,23 +483,6 @@
 /* Make sure dome wrapper has position relative */
 .dome-gallery-wrapper {
   position: relative;
-}
-
-.silver-pill {
-  position: sticky;
-  top: 1%;
-  font-family: 'Dancing Script', cursive;
-  font-size: 1.5rem;
-  z-index: 9999;
-  background: linear-gradient(135deg, #5151516f 0%, #9595947c 100%);
-  color: white;
-  font-weight: 600;
-  padding: 0.25rem 0.5rem;
-  border-radius: 999px;
-  white-space: nowrap;
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
-  box-shadow: 0 2px 8px rgba(218, 165, 32, 0.3);
 }
 
 /* Responsive adjustments */
@@ -484,10 +548,6 @@
 
   .dome-gallery-header {
     margin-bottom: 40px;
-  }
-  .silver-pill{
-    font-size: 1.2rem;
-    top: 0.8%;
   }
 }
 

@@ -19,7 +19,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [homeAnimReady, setHomeAnimReady] = useState(false);
   const [isMobile, setIsMobile] = useState(false);  // ← Add this
-  
+
   const featuredSectionRef = useRef(null);
 
   // ← Add this useEffect
@@ -27,10 +27,10 @@ const Home = () => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-    
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    
+
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
@@ -61,7 +61,7 @@ const Home = () => {
   };
 
   const scrollToFeatured = () => {
-    featuredSectionRef.current?.scrollIntoView({ 
+    featuredSectionRef.current?.scrollIntoView({
       behavior: 'smooth',
       block: 'start'
     });
@@ -71,13 +71,13 @@ const Home = () => {
     <div className="home-page">
       <SplashCursor />
       <Navbar />
-      <span className="silver-pill">925 Silver</span>
       <section className="hero-section">
         <div className={`home-anim-hero ${homeAnimReady ? 'home-anim-visible' : ''}`}>
           <ImageCarousel />
+          <h2 className="hero-silver-heading">Fine 925 Silver</h2>
         </div>
       </section>
-      
+
       {/* ← Conditionally render DomeGallery */}
       {!isMobile && (
         <section className='Mydome'>
@@ -97,8 +97,8 @@ const Home = () => {
                 openedImageHeight='500px'
               />
             </div>
-            <button 
-              className="dome-scroll-arrow" 
+            <button
+              className="dome-scroll-arrow"
               onClick={scrollToFeatured}
               aria-label="Scroll to products"
             >
@@ -107,7 +107,7 @@ const Home = () => {
           </div>
         </section>
       )}
-      
+
       <section className="featured-section" ref={featuredSectionRef}>
         <div className={`home-anim-featured ${homeAnimReady ? 'home-anim-visible' : ''}`}>
           {loading ? (
