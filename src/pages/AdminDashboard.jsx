@@ -69,6 +69,12 @@ const AdminDashboard = () => {
         description: ''
     });
 
+    //silver states
+    const [silverPrice, setSilverPrice] = useState(0);
+    const [newSilverPrice, setNewSilverPrice] = useState('');
+    const [updatingSilverPrice, setUpdatingSilverPrice] = useState(false);
+    const [fetchingSilverPrice, setFetchingSilverPrice] = useState(false);
+
     // Order preview modal states
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [showOrderModal, setShowOrderModal] = useState(false);
@@ -108,6 +114,7 @@ const AdminDashboard = () => {
             return;
         }
         fetchDashboardData();
+        fetchCurrentSilverPrice();
     }, [isAdmin, navigate]);
 
     const fetchDashboardData = async () => {
@@ -186,6 +193,50 @@ const AdminDashboard = () => {
             toast.error('Failed to load some dashboard data');
         } finally {
             setLoading(false);
+        }
+    };
+
+    // ============== SILVER PRICE FUNCTIONS ==============
+    const fetchCurrentSilverPrice = async () => {
+        try {
+            const response = await silverPriceAPI.getCurrentPrice();
+            setSilverPrice(response.pricePerGram);
+        } catch (error) {
+            console.error('Failed to fetch silver price:', error);
+        }
+    };
+
+    const handleUpdateSilverPrice = async () => {
+        if (!newSilverPrice || parseFloat(newSilverPrice) <= 0) {
+            toast.error('Please enter a valid silver price');
+            return;
+        }
+
+        setUpdatingSilverPrice(true);
+        try {
+            await silverPriceAPI.updatePrice(parseFloat(newSilverPrice));
+            toast.success('Silver price updated successfully!');
+            setNewSilverPrice('');
+            fetchCurrentSilverPrice();
+        } catch (error) {
+            console.error('Failed to update silver price:', error);
+            toast.error('Failed to update silver price');
+        } finally {
+            setUpdatingSilverPrice(false);
+        }
+    };
+
+    const handleFetchFromAPI = async () => {
+        setFetchingSilverPrice(true);
+        try {
+            await silverPriceAPI.fetchAndUpdate();
+            toast.success('Silver price fetched from API and updated!');
+            fetchCurrentSilverPrice();
+        } catch (error) {
+            console.error('Failed to fetch silver price from API:', error);
+            toast.error('Failed to fetch silver price from Gold API');
+        } finally {
+            setFetchingSilverPrice(false);
         }
     };
     const fetchCarouselSlides = async () => {
@@ -783,6 +834,12 @@ const AdminDashboard = () => {
                     >
                         Reviews
                     </button>
+                    <button
+                        className={`tab-new ${activeTab === 'silver' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('silver')}
+                    >
+                        Silver Price
+                    </button>
                 </div>
 
                 <div className="tab-content-new">
@@ -1357,6 +1414,86 @@ const AdminDashboard = () => {
                                     <p>No reviews yet.</p>
                                 </div>
                             )}
+                        </div>
+                    )}
+                    {activeTab === 'silver' && (
+                        <div className="silver-section-new">
+                            <h2>Silver Price Management</h2>
+
+                            {/* Current Price Display */}
+                            <div className="silver-card-new">
+                                <div className="current-price-new">
+                                    <p>Current Silver Price (per gram)</p>
+                                    <h3 className="price-display-new">
+                                        ₹{silverPrice.toFixed(2)}
+                                    </h3>
+                                    <p style={{ fontSize: '14px', color: '#666', marginTop: '10px' }}>
+                                        Last updated: {new Date().toLocaleString()}
+                                    </p>
+                                </div>
+
+                                {/* Manual Update */}
+                                <div className="update-price-new">
+                                    <label>Update Price Manually</label>
+                                    <div className="price-input-group-new">
+                                        <input
+                                            type="number"
+                                            value={newSilverPrice}
+                                            onChange={(e) => setNewSilverPrice(e.target.value)}
+                                            placeholder="Enter new price (₹)"
+                                            step="0.01"
+                                            min="0"
+                                            disabled={updatingSilverPrice}
+                                        />
+                                        <button
+                                            className="update-btn-new"
+                                            onClick={handleUpdateSilverPrice}
+                                            disabled={updatingSilverPrice}
+                                        >
+                                            {updatingSilverPrice ? (
+                                                <>
+                                                    <span className="spinner-small"></span>
+                                                    Updating...
+                                                </>
+                                            ) : (
+                                                'Update Price'
+                                            )}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Auto-Fetch from API */}
+                                <div className="update-price-new" style={{ marginTop: '20px' }}>
+                                    <label>Fetch from Gold API (Auto-Update)</label>
+                                    <button
+                                        className="update-btn-new"
+                                        onClick={handleFetchFromAPI}
+                                        disabled={fetchingSilverPrice}
+                                        style={{ width: '100%' }}
+                                    >
+                                        {fetchingSilverPrice ? (
+                                            <>
+                                                <span className="spinner-small"></span>
+                                                Fetching from API...
+                                            </>
+                                        ) : (
+                                            '🔄 Fetch Latest Price from Gold API'
+                                        )}
+                                    </button>
+                                </div>
+
+                                {/* Info Note */}
+                                <div className="price-note-new">
+                                    <p>
+                                        <strong>ℹ️ How it works:</strong><br />
+                                        • Products with <strong>silver weight</strong> calculate price automatically:
+                                        Base Price + (Silver Weight × Silver Price) + Making Charge<br />
+                                        • Products <strong>without weight</strong> use manual pricing with 10% discount<br />
+                                        • Price updates <strong>twice daily</strong> at 9 AM and 6 PM IST via Gold API<br />
+                                        • You can also manually update or fetch the latest price anytime
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     )}
                 </div>

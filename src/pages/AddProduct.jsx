@@ -20,6 +20,7 @@ const AddProduct = () => {
     deliveryType: 'ready-to-ship',
     silverWeight: '',
     grossWeight: '',
+    makingCharge: '0',
     weightUnit: 'grams'
   });
 
@@ -373,9 +374,28 @@ const AddProduct = () => {
           <div className="form-section">
             <h3>Pricing Information</h3>
 
+            <div style={{
+              background: formData.silverWeight > 0 ? '#e3f2fd' : '#e8f5e9',
+              border: `2px solid ${formData.silverWeight > 0 ? '#1976d2' : '#2e7d32'}`,
+              borderRadius: '8px',
+              padding: '12px',
+              marginBottom: '20px'
+            }}>
+              <p style={{
+                margin: 0,
+                fontSize: '14px',
+                fontWeight: '600',
+                color: formData.silverWeight > 0 ? '#1976d2' : '#2e7d32'
+              }}>
+                {formData.silverWeight > 0
+                  ? '🔄 Auto-Pricing: Based on live silver rates'
+                  : '✏️ Manual Pricing: Fixed price with discount'}
+              </p>
+            </div>
+
             <div className="form-row">
               <div className="form-group">
-                <label>Product Price (₹) *</label>
+                <label>Base Price (₹) *</label>
                 <input
                   type="number"
                   name="basePrice"
@@ -386,14 +406,62 @@ const AddProduct = () => {
                   step="0.001"
                   required
                 />
+                <small className="field-hint">
+                  {formData.silverWeight > 0
+                    ? 'Base material/crafting cost (excluding silver value)'
+                    : 'Full product price before discount'}
+                </small>
               </div>
+
+              {formData.silverWeight > 0 && (
+                <div className="form-group">
+                  <label>Making Charge (₹)</label>
+                  <input
+                    type="number"
+                    name="makingCharge"
+                    value={formData.makingCharge}
+                    onChange={handleChange}
+                    placeholder="0"
+                    min="0"
+                    step="0.001"
+                  />
+                  <small className="field-hint">
+                    Additional crafting/labor charges
+                  </small>
+                </div>
+              )}
             </div>
 
             <div className="pricing-note">
-              <p>💡 Final Price (after 10% discount) = ₹{formData.basePrice ? (formData.basePrice * 0.9).toFixed(3) : '0.000'}</p>
+              {formData.silverWeight > 0 ? (
+                <>
+                  <p style={{ color: '#1976d2', fontWeight: '600', marginBottom: '10px' }}>
+                    🔄 AUTO-PRICING MODE ENABLED
+                  </p>
+                  <p style={{ fontSize: '14px', color: '#666', lineHeight: '1.6' }}>
+                    Final Price = Base Price + (Silver Weight × Current Silver Price) + Making Charge
+                    <br />
+                    <br />
+                    <strong>Note:</strong> The final price will be calculated automatically based on the current silver market price.
+                    Price updates twice daily (9 AM & 6 PM IST) via Gold API.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p style={{ color: '#2e7d32', fontWeight: '600', marginBottom: '10px' }}>
+                    ✏️ MANUAL PRICING MODE
+                  </p>
+                  <p style={{ fontSize: '14px', color: '#666', lineHeight: '1.6' }}>
+                    Final Price (after 10% discount) = ₹{formData.basePrice ? (formData.basePrice * 0.9).toFixed(3) : '0.000'}
+                    <br />
+                    <br />
+                    <strong>Note:</strong> Since no silver weight is provided, this product uses manual pricing with a fixed 10% discount.
+                    You can update the base price anytime from the admin panel.
+                  </p>
+                </>
+              )}
             </div>
           </div>
-
           <button
             type="submit"
             className="submit-btn"
@@ -409,8 +477,8 @@ const AddProduct = () => {
             )}
           </button>
         </form>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 

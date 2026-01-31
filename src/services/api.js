@@ -411,5 +411,28 @@ export const carouselAPI = {
   }
 };
 
+export const silverPriceAPI = {
+  getCurrentPrice: async () => {
+    const response = await api.get('/silver-price');
+    return response.data;
+  },
+  
+  updatePrice: async (pricePerGram) => {
+    const response = await api.put('/silver-price', { pricePerGram });
+    return response.data;
+  },
+  
+  // ✅ ADD THIS NEW METHOD
+  fetchAndUpdate: async () => {
+    const response = await api.post('/silver-price/fetch');
+    return response.data;
+  },
+  
+  getPriceHistory: async () => {
+    const response = await api.get('/silver-price/history');
+    return response.data;
+  }
+};
+
 
 export default api;
