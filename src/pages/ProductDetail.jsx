@@ -46,6 +46,9 @@ const ProductDetail = () => {
   const fullscreenImageRef = useRef(null);
   const iconsRef = useRef([]);
 
+  const getDisplayPrice = (product) => {
+    return product.finalPrice || product.basePrice || 0;
+  };
 
   // Helper function to format price with 3 decimals and Indian number format
   const formatPrice = (price) => {
@@ -104,30 +107,26 @@ const ProductDetail = () => {
   };
   const handleBuyNow = () => {
     if (!isAuthenticated) {
-      toast.warning('Please login to checkout', {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      toast.warning('Please login to checkout');
       navigate('/login');
       return;
     }
 
     if (!product.inStock) {
-      toast.error('Product is out of stock', {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      toast.error('Product is out of stock');
       return;
     }
 
-    // Direct checkout with this product only - no cart modification
+    // ✅ Use correct calculated price
+    const displayPrice = getDisplayPrice(product);
+
     navigate('/checkout', {
       state: {
         buyNowMode: true,
         buyNowItem: {
           product: product,
           quantity: quantity,
-          itemTotal: (product.calculatedPrice || product.finalPrice || product.basePrice) * quantity
+          itemTotal: displayPrice * quantity
         }
       }
     });
@@ -530,7 +529,7 @@ const ProductDetail = () => {
 
             <div className="price-section-elegant">
               <div className="price-main">
-                ₹{formatPrice(product.calculatedPrice || product.finalPrice || product.basePrice)}
+                ₹{formatPrice(getDisplayPrice(product))}
               </div>
               <p className="price-note">Inclusive of all taxes</p>
             </div>

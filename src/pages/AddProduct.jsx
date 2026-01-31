@@ -19,8 +19,9 @@ const AddProduct = () => {
     description: '',
     deliveryType: 'ready-to-ship',
     silverWeight: '',
+    netWeight: '',
     grossWeight: '',
-    makingCharge: '0',
+    makingChargeRate: '0',
     weightUnit: 'grams'
   });
 
@@ -154,10 +155,17 @@ const AddProduct = () => {
       formDataToSend.append('description', formData.description.trim());
       formDataToSend.append('deliveryType', formData.deliveryType);
 
-      if (formData.silverWeight || formData.grossWeight) {
+      // ✅ UPDATED: Include all three weights
+      if (formData.silverWeight || formData.netWeight || formData.grossWeight) {
         formDataToSend.append('weight[silverWeight]', formData.silverWeight ? parseFloat(formData.silverWeight).toFixed(3) : '0.000');
+        formDataToSend.append('weight[netWeight]', formData.netWeight ? parseFloat(formData.netWeight).toFixed(3) : '0.000');
         formDataToSend.append('weight[grossWeight]', formData.grossWeight ? parseFloat(formData.grossWeight).toFixed(3) : '0.000');
         formDataToSend.append('weight[unit]', formData.weightUnit);
+      }
+
+      // ✅ CHANGED: Send makingChargeRate instead of makingCharge
+      if (formData.makingChargeRate) {
+        formDataToSend.append('makingChargeRate', parseFloat(formData.makingChargeRate).toFixed(3));
       }
 
       imageFiles.forEach(file => {
@@ -315,7 +323,7 @@ const AddProduct = () => {
 
             <div className="form-row">
               <div className="form-group">
-                <label>Net Weight (Silver)</label>
+                <label>Silver Weight (Pure Silver Content)</label>
                 <div className="weight-input-group">
                   <input
                     type="number"
@@ -336,16 +344,16 @@ const AddProduct = () => {
                     <option value="kg">kg</option>
                   </select>
                 </div>
-                <small className="field-hint">Pure silver weight excluding stones/gems</small>
+                <small className="field-hint">Pure silver content weight</small>
               </div>
 
               <div className="form-group">
-                <label>Gross Weight (Total)</label>
+                <label>Net Weight * (Used for Pricing)</label>
                 <div className="weight-input-group">
                   <input
                     type="number"
-                    name="grossWeight"
-                    value={formData.grossWeight}
+                    name="netWeight"
+                    value={formData.netWeight}
                     onChange={handleChange}
                     placeholder="0.000"
                     min="0"
@@ -353,8 +361,27 @@ const AddProduct = () => {
                   />
                   <span className="unit-display">{formData.weightUnit}</span>
                 </div>
-                <small className="field-hint">Total weight including all components</small>
+                <small className="field-hint" style={{ color: '#d4af37', fontWeight: 600 }}>
+                  ⚠️ IMPORTANT: Price calculated using this weight
+                </small>
               </div>
+            </div>
+
+            <div className="form-group">
+              <label>Gross Weight (Total)</label>
+              <div className="weight-input-group">
+                <input
+                  type="number"
+                  name="grossWeight"
+                  value={formData.grossWeight}
+                  onChange={handleChange}
+                  placeholder="0.000"
+                  min="0"
+                  step="0.001"
+                />
+                <span className="unit-display">{formData.weightUnit}</span>
+              </div>
+              <small className="field-hint">Total weight including all components (for display only)</small>
             </div>
 
             <div className="weight-info-note">
@@ -364,8 +391,10 @@ const AddProduct = () => {
                 <line x1="12" y1="8" x2="12.01" y2="8" />
               </svg>
               <p>
-                <strong>Note:</strong> Net Weight is the pure silver content, while Gross Weight includes stones,
-                gems, and other materials. Leave blank if not applicable.
+                <strong>Note:</strong><br />
+                • <strong>Silver Weight:</strong> Pure silver content<br />
+                • <strong>Net Weight:</strong> Weight used for price calculation<br />
+                • <strong>Gross Weight:</strong> Total weight including stones/gems (display only)
               </p>
             </div>
           </div>
@@ -375,8 +404,8 @@ const AddProduct = () => {
             <h3>Pricing Information</h3>
 
             <div style={{
-              background: formData.silverWeight > 0 ? '#e3f2fd' : '#e8f5e9',
-              border: `2px solid ${formData.silverWeight > 0 ? '#1976d2' : '#2e7d32'}`,
+              background: formData.netWeight > 0 ? '#e3f2fd' : '#e8f5e9',
+              border: `2px solid ${formData.netWeight > 0 ? '#1976d2' : '#2e7d32'}`,
               borderRadius: '8px',
               padding: '12px',
               marginBottom: '20px'
@@ -385,11 +414,11 @@ const AddProduct = () => {
                 margin: 0,
                 fontSize: '14px',
                 fontWeight: '600',
-                color: formData.silverWeight > 0 ? '#1976d2' : '#2e7d32'
+                color: formData.netWeight > 0 ? '#1976d2' : '#2e7d32'
               }}>
-                {formData.silverWeight > 0
-                  ? '🔄 Auto-Pricing: Based on live silver rates'
-                  : '✏️ Manual Pricing: Fixed price with discount'}
+                {formData.netWeight > 0
+                  ? '🔄 Auto-Pricing: Based on net weight × silver rate'
+                  : '✏️ Manual Pricing: Fixed price with 10% discount'}
               </p>
             </div>
 
@@ -401,50 +430,67 @@ const AddProduct = () => {
                   name="basePrice"
                   value={formData.basePrice}
                   onChange={handleChange}
-                  placeholder="10000.000"
+                  placeholder="737.000"
                   min="0"
                   step="0.001"
                   required
                 />
                 <small className="field-hint">
-                  {formData.silverWeight > 0
+                  {formData.netWeight > 0
                     ? 'Base material/crafting cost (excluding silver value)'
-                    : 'Full product price before discount'}
+                    : 'Full product price before 10% discount'}
                 </small>
               </div>
 
-              {formData.silverWeight > 0 && (
+              {formData.netWeight > 0 && (
                 <div className="form-group">
-                  <label>Making Charge (₹)</label>
+                  <label>Making Charge Rate (₹/gram) *</label>
                   <input
                     type="number"
-                    name="makingCharge"
-                    value={formData.makingCharge}
+                    name="makingChargeRate"
+                    value={formData.makingChargeRate}
                     onChange={handleChange}
-                    placeholder="0"
+                    placeholder="560"
                     min="0"
                     step="0.001"
                   />
                   <small className="field-hint">
-                    Additional crafting/labor charges
+                    Making charge per gram (e.g., ₹560/gram)
                   </small>
                 </div>
               )}
             </div>
 
             <div className="pricing-note">
-              {formData.silverWeight > 0 ? (
+              {formData.netWeight > 0 ? (
                 <>
                   <p style={{ color: '#1976d2', fontWeight: '600', marginBottom: '10px' }}>
                     🔄 AUTO-PRICING MODE ENABLED
                   </p>
-                  <p style={{ fontSize: '14px', color: '#666', lineHeight: '1.6' }}>
-                    Final Price = Base Price + (Silver Weight × Current Silver Price) + Making Charge
-                    <br />
-                    <br />
-                    <strong>Note:</strong> The final price will be calculated automatically based on the current silver market price.
-                    Price updates twice daily (9 AM & 6 PM IST) via Gold API.
-                  </p>
+                  <div style={{ fontSize: '14px', color: '#666', lineHeight: '1.8', background: '#f5f5f5', padding: '15px', borderRadius: '8px' }}>
+                    <p style={{ marginBottom: '10px', fontWeight: '600' }}>Formula:</p>
+                    <code style={{ display: 'block', background: '#fff', padding: '10px', borderRadius: '4px', marginBottom: '10px' }}>
+                      1. Silver Cost = Net Weight × Silver Price/gram<br />
+                      2. Making Charges = Making Rate × Net Weight<br />
+                      3. Total = Base Price + Silver Cost + Making Charges<br />
+                      4. Final Price = Total × 0.9 (10% discount)
+                    </code>
+
+                    {formData.basePrice && formData.netWeight && formData.makingChargeRate && (
+                      <div style={{ marginTop: '15px', padding: '10px', background: '#e3f2fd', borderRadius: '4px' }}>
+                        <p style={{ margin: '5px 0', color: '#1976d2' }}><strong>Example Calculation (Silver @ ₹310/g):</strong></p>
+                        <p style={{ margin: '5px 0' }}>Base Price: ₹{parseFloat(formData.basePrice).toFixed(2)}</p>
+                        <p style={{ margin: '5px 0' }}>Silver Cost: {formData.netWeight} × 310 = ₹{(parseFloat(formData.netWeight) * 310).toFixed(2)}</p>
+                        <p style={{ margin: '5px 0' }}>Making: {formData.makingChargeRate} × {formData.netWeight} = ₹{(parseFloat(formData.makingChargeRate) * parseFloat(formData.netWeight)).toFixed(2)}</p>
+                        <p style={{ margin: '5px 0' }}>Total: ₹{(parseFloat(formData.basePrice) + (parseFloat(formData.netWeight) * 310) + (parseFloat(formData.makingChargeRate) * parseFloat(formData.netWeight))).toFixed(2)}</p>
+                        <p style={{ margin: '5px 0', fontWeight: '700', color: '#1976d2' }}>
+                          Final Price (10% off): ₹{((parseFloat(formData.basePrice) + (parseFloat(formData.netWeight) * 310) + (parseFloat(formData.makingChargeRate) * parseFloat(formData.netWeight))) * 0.9).toFixed(2)}
+                        </p>
+                      </div>
+                    )}
+
+                    <p style={{ marginTop: '10px' }}><strong>Note:</strong> Price updates automatically twice daily (9 AM & 6 PM IST) based on current silver rates from Gold API.</p>
+                  </div>
                 </>
               ) : (
                 <>
@@ -452,11 +498,11 @@ const AddProduct = () => {
                     ✏️ MANUAL PRICING MODE
                   </p>
                   <p style={{ fontSize: '14px', color: '#666', lineHeight: '1.6' }}>
-                    Final Price (after 10% discount) = ₹{formData.basePrice ? (formData.basePrice * 0.9).toFixed(3) : '0.000'}
+                    Final Price (after 10% discount) = ₹{formData.basePrice ? (formData.basePrice * 0.9).toFixed(2) : '0.00'}
                     <br />
                     <br />
-                    <strong>Note:</strong> Since no silver weight is provided, this product uses manual pricing with a fixed 10% discount.
-                    You can update the base price anytime from the admin panel.
+                    <strong>Note:</strong> Since net weight is not provided, this product uses manual pricing with a fixed 10% discount.
+                    The price will NOT change with silver rate fluctuations.
                   </p>
                 </>
               )}

@@ -21,7 +21,9 @@ const EditProduct = () => {
     deliveryType: 'ready-to-ship',
     inStock: true,
     silverWeight: '',
+    netWeight: '',
     grossWeight: '',
+    makingChargeRate: '0',
     weightUnit: 'grams'
   });
 
@@ -178,6 +180,55 @@ const EditProduct = () => {
     return true;
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setError('');
+
+  //   if (!validateForm()) {
+  //     return;
+  //   }
+
+  //   setSubmitting(true);
+
+  //   try {
+  //     const formDataToSend = new FormData();
+
+  //     formDataToSend.append('itemname', formData.itemname.trim());
+  //     formDataToSend.append('itemCode', formData.itemCode.trim().toUpperCase());
+  //     formDataToSend.append('basePrice', parseFloat(formData.basePrice).toFixed(3));
+  //     formDataToSend.append('category', formData.category);
+  //     formDataToSend.append('description', formData.description.trim());
+  //     formDataToSend.append('deliveryType', formData.deliveryType);
+  //     formDataToSend.append('inStock', formData.inStock);
+
+  //     // Add weight data with 3 decimal precision
+  //     if (formData.silverWeight || formData.grossWeight) {
+  //       formDataToSend.append('weight[silverWeight]', formData.silverWeight ? parseFloat(formData.silverWeight).toFixed(3) : '0.000');
+  //       formDataToSend.append('weight[grossWeight]', formData.grossWeight ? parseFloat(formData.grossWeight).toFixed(3) : '0.000');
+  //       formDataToSend.append('weight[unit]', formData.weightUnit);
+  //     }
+
+  //     // Only append new images if user selected any
+  //     if (imageFiles.length > 0) {
+  //       imageFiles.forEach(file => {
+  //         formDataToSend.append('itemImages', file);
+  //       });
+  //     }
+
+  //     await productsAPI.updateProduct(id, formDataToSend);
+
+  //     toast.success('✅ Product updated successfully!');
+  //     navigate('/admin');
+
+  //   } catch (err) {
+  //     console.error('Update product error:', err);
+  //     const errorMessage = err.response?.data?.message || 'Failed to update product';
+  //     setError(errorMessage);
+  //     toast.error(errorMessage);
+  //   } finally {
+  //     setSubmitting(false);
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -186,7 +237,7 @@ const EditProduct = () => {
       return;
     }
 
-    setSubmitting(true);
+    setLoading(true);
 
     try {
       const formDataToSend = new FormData();
@@ -197,34 +248,35 @@ const EditProduct = () => {
       formDataToSend.append('category', formData.category);
       formDataToSend.append('description', formData.description.trim());
       formDataToSend.append('deliveryType', formData.deliveryType);
-      formDataToSend.append('inStock', formData.inStock);
 
-      // Add weight data with 3 decimal precision
-      if (formData.silverWeight || formData.grossWeight) {
+      // ✅ UPDATED: Include all three weights
+      if (formData.silverWeight || formData.netWeight || formData.grossWeight) {
         formDataToSend.append('weight[silverWeight]', formData.silverWeight ? parseFloat(formData.silverWeight).toFixed(3) : '0.000');
+        formDataToSend.append('weight[netWeight]', formData.netWeight ? parseFloat(formData.netWeight).toFixed(3) : '0.000');
         formDataToSend.append('weight[grossWeight]', formData.grossWeight ? parseFloat(formData.grossWeight).toFixed(3) : '0.000');
         formDataToSend.append('weight[unit]', formData.weightUnit);
       }
 
-      // Only append new images if user selected any
-      if (imageFiles.length > 0) {
-        imageFiles.forEach(file => {
-          formDataToSend.append('itemImages', file);
-        });
+      // ✅ CHANGED: Send makingChargeRate instead of makingCharge
+      if (formData.makingChargeRate) {
+        formDataToSend.append('makingChargeRate', parseFloat(formData.makingChargeRate).toFixed(3));
       }
 
-      await productsAPI.updateProduct(id, formDataToSend);
+      imageFiles.forEach(file => {
+        formDataToSend.append('itemImages', file);
+      });
 
-      toast.success('✅ Product updated successfully!');
+      await productsAPI.createProduct(formDataToSend);
+      toast.success('✅ Product added successfully!');
       navigate('/admin');
 
     } catch (err) {
-      console.error('Update product error:', err);
-      const errorMessage = err.response?.data?.message || 'Failed to update product';
+      console.error('Add product error:', err);
+      const errorMessage = err.response?.data?.message || 'Failed to add product';
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
-      setSubmitting(false);
+      setLoading(false);
     }
   };
 
@@ -422,7 +474,7 @@ const EditProduct = () => {
 
             <div className="form-row">
               <div className="form-group">
-                <label>Silver Weight</label>
+                <label>Silver Weight (Pure Silver Content)</label>
                 <div className="weight-input-group">
                   <input
                     type="number"
@@ -443,16 +495,16 @@ const EditProduct = () => {
                     <option value="kg">kg</option>
                   </select>
                 </div>
-                <small className="field-hint">Pure silver weight excluding stones/gems</small>
+                <small className="field-hint">Pure silver content weight</small>
               </div>
 
               <div className="form-group">
-                <label>Gross Weight (Total)</label>
+                <label>Net Weight * (Used for Pricing)</label>
                 <div className="weight-input-group">
                   <input
                     type="number"
-                    name="grossWeight"
-                    value={formData.grossWeight}
+                    name="netWeight"
+                    value={formData.netWeight}
                     onChange={handleChange}
                     placeholder="0.000"
                     min="0"
@@ -460,8 +512,27 @@ const EditProduct = () => {
                   />
                   <span className="unit-display">{formData.weightUnit}</span>
                 </div>
-                <small className="field-hint">Total weight including all components</small>
+                <small className="field-hint" style={{ color: '#d4af37', fontWeight: 600 }}>
+                  ⚠️ IMPORTANT: Price calculated using this weight
+                </small>
               </div>
+            </div>
+
+            <div className="form-group">
+              <label>Gross Weight (Total)</label>
+              <div className="weight-input-group">
+                <input
+                  type="number"
+                  name="grossWeight"
+                  value={formData.grossWeight}
+                  onChange={handleChange}
+                  placeholder="0.000"
+                  min="0"
+                  step="0.001"
+                />
+                <span className="unit-display">{formData.weightUnit}</span>
+              </div>
+              <small className="field-hint">Total weight including all components (for display only)</small>
             </div>
 
             <div className="weight-info-note">
@@ -471,14 +542,16 @@ const EditProduct = () => {
                 <line x1="12" y1="8" x2="12.01" y2="8" />
               </svg>
               <p>
-                <strong>Note:</strong> Silver Weight is the pure silver content, while Gross Weight includes stones,
-                gems, and other materials. Leave blank if not applicable.
+                <strong>Note:</strong><br />
+                • <strong>Silver Weight:</strong> Pure silver content<br />
+                • <strong>Net Weight:</strong> Weight used for price calculation<br />
+                • <strong>Gross Weight:</strong> Total weight including stones/gems (display only)
               </p>
             </div>
           </div>
 
           {/* Pricing Information */}
-          <div className="form-section">
+          {/* <div className="form-section">
             <h3>Pricing Information</h3>
 
             <div className="form-row">
@@ -499,6 +572,114 @@ const EditProduct = () => {
 
             <div className="pricing-note">
               <p>💡 Final Price (after 10% discount) = ₹{formData.basePrice ? (formData.basePrice * 0.9).toFixed(3) : '0.000'}</p>
+            </div>
+          </div> */}
+          <div className="form-section">
+            <h3>Pricing Information</h3>
+
+            <div style={{
+              background: formData.netWeight > 0 ? '#e3f2fd' : '#e8f5e9',
+              border: `2px solid ${formData.netWeight > 0 ? '#1976d2' : '#2e7d32'}`,
+              borderRadius: '8px',
+              padding: '12px',
+              marginBottom: '20px'
+            }}>
+              <p style={{
+                margin: 0,
+                fontSize: '14px',
+                fontWeight: '600',
+                color: formData.netWeight > 0 ? '#1976d2' : '#2e7d32'
+              }}>
+                {formData.netWeight > 0
+                  ? '🔄 Auto-Pricing: Based on net weight × silver rate'
+                  : '✏️ Manual Pricing: Fixed price with 10% discount'}
+              </p>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>Base Price (₹) *</label>
+                <input
+                  type="number"
+                  name="basePrice"
+                  value={formData.basePrice}
+                  onChange={handleChange}
+                  placeholder="737.000"
+                  min="0"
+                  step="0.001"
+                  required
+                />
+                <small className="field-hint">
+                  {formData.netWeight > 0
+                    ? 'Base material/crafting cost (excluding silver value)'
+                    : 'Full product price before 10% discount'}
+                </small>
+              </div>
+
+              {formData.netWeight > 0 && (
+                <div className="form-group">
+                  <label>Making Charge Rate (₹/gram) *</label>
+                  <input
+                    type="number"
+                    name="makingChargeRate"
+                    value={formData.makingChargeRate}
+                    onChange={handleChange}
+                    placeholder="560"
+                    min="0"
+                    step="0.001"
+                  />
+                  <small className="field-hint">
+                    Making charge per gram (e.g., ₹560/gram)
+                  </small>
+                </div>
+              )}
+            </div>
+
+            <div className="pricing-note">
+              {formData.netWeight > 0 ? (
+                <>
+                  <p style={{ color: '#1976d2', fontWeight: '600', marginBottom: '10px' }}>
+                    🔄 AUTO-PRICING MODE ENABLED
+                  </p>
+                  <div style={{ fontSize: '14px', color: '#666', lineHeight: '1.8', background: '#f5f5f5', padding: '15px', borderRadius: '8px' }}>
+                    <p style={{ marginBottom: '10px', fontWeight: '600' }}>Formula:</p>
+                    <code style={{ display: 'block', background: '#fff', padding: '10px', borderRadius: '4px', marginBottom: '10px' }}>
+                      1. Silver Cost = Net Weight × Silver Price/gram<br />
+                      2. Making Charges = Making Rate × Net Weight<br />
+                      3. Total = Base Price + Silver Cost + Making Charges<br />
+                      4. Final Price = Total × 0.9 (10% discount)
+                    </code>
+
+                    {formData.basePrice && formData.netWeight && formData.makingChargeRate && (
+                      <div style={{ marginTop: '15px', padding: '10px', background: '#e3f2fd', borderRadius: '4px' }}>
+                        <p style={{ margin: '5px 0', color: '#1976d2' }}><strong>Example Calculation (Silver @ ₹310/g):</strong></p>
+                        <p style={{ margin: '5px 0' }}>Base Price: ₹{parseFloat(formData.basePrice).toFixed(2)}</p>
+                        <p style={{ margin: '5px 0' }}>Silver Cost: {formData.netWeight} × 310 = ₹{(parseFloat(formData.netWeight) * 310).toFixed(2)}</p>
+                        <p style={{ margin: '5px 0' }}>Making: {formData.makingChargeRate} × {formData.netWeight} = ₹{(parseFloat(formData.makingChargeRate) * parseFloat(formData.netWeight)).toFixed(2)}</p>
+                        <p style={{ margin: '5px 0' }}>Total: ₹{(parseFloat(formData.basePrice) + (parseFloat(formData.netWeight) * 310) + (parseFloat(formData.makingChargeRate) * parseFloat(formData.netWeight))).toFixed(2)}</p>
+                        <p style={{ margin: '5px 0', fontWeight: '700', color: '#1976d2' }}>
+                          Final Price (10% off): ₹{((parseFloat(formData.basePrice) + (parseFloat(formData.netWeight) * 310) + (parseFloat(formData.makingChargeRate) * parseFloat(formData.netWeight))) * 0.9).toFixed(2)}
+                        </p>
+                      </div>
+                    )}
+
+                    <p style={{ marginTop: '10px' }}><strong>Note:</strong> Price updates automatically twice daily (9 AM & 6 PM IST) based on current silver rates from Gold API.</p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p style={{ color: '#2e7d32', fontWeight: '600', marginBottom: '10px' }}>
+                    ✏️ MANUAL PRICING MODE
+                  </p>
+                  <p style={{ fontSize: '14px', color: '#666', lineHeight: '1.6' }}>
+                    Final Price (after 10% discount) = ₹{formData.basePrice ? (formData.basePrice * 0.9).toFixed(2) : '0.00'}
+                    <br />
+                    <br />
+                    <strong>Note:</strong> Since net weight is not provided, this product uses manual pricing with a fixed 10% discount.
+                    The price will NOT change with silver rate fluctuations.
+                  </p>
+                </>
+              )}
             </div>
           </div>
 

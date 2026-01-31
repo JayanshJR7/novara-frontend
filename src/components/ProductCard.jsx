@@ -91,7 +91,8 @@ const ProductCard = ({ product }) => {
     return null;
   }
 
-  const price = product.finalPrice || 0;
+  const displayPrice = product.finalPrice || product.basePrice || 0;
+  const originalPrice = product.basePrice || 0;
   const inWishlist = isInWishlist(product._id);
 
   return (
@@ -148,9 +149,9 @@ const ProductCard = ({ product }) => {
             )}
           </div>
           <div className="product-pricing">
-            <p className="original-price">₹{product.basePrice?.toLocaleString('en-IN')}</p>
+            <p className="original-price">₹{originalPrice.toFixed(2).toLocaleString('en-IN')}</p>
             <p className="product-price" style={{ color: "#3c0a0bff" }}>
-              ₹{price.toLocaleString('en-IN')}
+              ₹{displayPrice.toFixed(2).toLocaleString('en-IN')}
             </p>
             <span className="discount-badge">10% OFF</span>
           </div>

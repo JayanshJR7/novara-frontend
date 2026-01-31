@@ -56,7 +56,7 @@ const PremiumShowcase = () => {
 
       if (isSmallMobile) {
         return premiumProducts.map((_, i) => ({
-          top: `${10 + i * 95}px`, 
+          top: `${10 + i * 95}px`,
           left: i % 2 === 0 ? '3%' : '52%',
           size: 'small',
         }));
@@ -135,8 +135,8 @@ const PremiumShowcase = () => {
   };
 
   const formatPrice = (product) => {
-    const price = product.calculatedPrice || product.basePrice || 0;
-    return `₹${price.toLocaleString('en-IN')}`;
+    const price = product.finalPrice || product.basePrice || 0;
+    return `₹${price.toFixed(3).toLocaleString('en-IN')}`;
   };
 
   const getImage = (product) =>
@@ -144,77 +144,77 @@ const PremiumShowcase = () => {
     product.itemImage ||
     'https://via.placeholder.com/400x500?text=No+Image';
 
-    if (loading || !premiumProducts.length) return null;
+  if (loading || !premiumProducts.length) return null;
 
-    /* ---------------- UI ---------------- */
-    return (
-      <div style={styles.container}>
-        <div style={styles.backgroundGradient}></div>
-        <div style={styles.meshGradient1}></div>
-        <div style={styles.meshGradient2}></div>
+  /* ---------------- UI ---------------- */
+  return (
+    <div style={styles.container}>
+      <div style={styles.backgroundGradient}></div>
+      <div style={styles.meshGradient1}></div>
+      <div style={styles.meshGradient2}></div>
 
-        {/* Header */}
-        <div style={styles.header}>
-          <div style={styles.luxuryBadge}>SIGNATURE COLLECTION</div>
-          <h2 style={styles.title}>Exquisite Treasures</h2>
-          <p style={styles.subtitle}>Interact with our masterpieces</p>
-        </div>
+      {/* Header */}
+      <div style={styles.header}>
+        <div style={styles.luxuryBadge}>SIGNATURE COLLECTION</div>
+        <h2 style={styles.title}>Exquisite Treasures</h2>
+        <p style={styles.subtitle}>Interact with our masterpieces</p>
+      </div>
 
-        {/* Floating Products */}
-        <div style={styles.floatingContainer}>
-          {premiumProducts.map((product, index) => {
-            const position = positions[index] || {};
-            const isHovered = hoveredIndex === index;
+      {/* Floating Products */}
+      <div style={styles.floatingContainer}>
+        {premiumProducts.map((product, index) => {
+          const position = positions[index] || {};
+          const isHovered = hoveredIndex === index;
 
-            return (
-              <div
-                key={product._id}
-                style={{
-                  ...styles.productFloat,
-                  ...getSizeStyles(position.size),
-                  top: position.top,
-                  left: position.left,
-                  zIndex: isHovered ? 1000 : 10 + index,
-                  transform: isHovered ? 'scale(1.3)' : 'scale(1)',
-                  filter:
-                    hoveredIndex !== null && !isHovered
-                      ? 'blur(3px) brightness(0.6)'
-                      : 'none',
-                }}
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
-                onClick={() => navigate(`/product/${product._id}`)}
-              >
-                <div style={styles.imageWrapper}>
-                  <img
-                    src={getImage(product)}
-                    alt={product.itemname}
-                    loading='lazy'
-                    style={styles.productImage}
-                  />
+          return (
+            <div
+              key={product._id}
+              style={{
+                ...styles.productFloat,
+                ...getSizeStyles(position.size),
+                top: position.top,
+                left: position.left,
+                zIndex: isHovered ? 1000 : 10 + index,
+                transform: isHovered ? 'scale(1.3)' : 'scale(1)',
+                filter:
+                  hoveredIndex !== null && !isHovered
+                    ? 'blur(3px) brightness(0.6)'
+                    : 'none',
+              }}
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
+              onClick={() => navigate(`/product/${product._id}`)}
+            >
+              <div style={styles.imageWrapper}>
+                <img
+                  src={getImage(product)}
+                  alt={product.itemname}
+                  loading='lazy'
+                  style={styles.productImage}
+                />
 
-                  <div style={{
-                    ...styles.gradientOverlay,
-                    opacity: isHovered ? 0.9 : 0.7,
-                  }}></div>
+                <div style={{
+                  ...styles.gradientOverlay,
+                  opacity: isHovered ? 0.9 : 0.7,
+                }}></div>
 
-                  <div
-                    style={{
-                      ...styles.hoverContent,
-                      opacity: isHovered ? 1 : 0,
-                    }}
-                  >
-                    <h3 style={styles.productName}>{product.itemname}</h3>
-                    <div style={styles.priceTag}>{formatPrice(product)}</div>
-                    <button style={styles.exploreBtn}>Explore →</button>
-                  </div>
+                <div
+                  style={{
+                    ...styles.hoverContent,
+                    opacity: isHovered ? 1 : 0,
+                  }}
+                >
+                  <h3 style={styles.productName}>{product.itemname}</h3>
+                  <div style={styles.priceTag}>{formatPrice(product)}</div>
+                  <button style={styles.exploreBtn}>Explore →</button>
                 </div>
               </div>
-            );
-          })}
-        </div>
+            </div>
+          );
+        })}
+      </div>
 
-        <style>{`
+      <style>{`
         @keyframes float {
           0%, 100% { transform: translateY(0px) rotate(0deg); }
           33% { transform: translateY(-15px) rotate(1deg); }
@@ -231,174 +231,174 @@ const PremiumShowcase = () => {
           50% { transform: translate(-30px, 30px) scale(1.05); }
         }
       `}</style>
-      </div>
-    );
-  };
+    </div>
+  );
+};
 
-  const styles = {
-    container: {
-      position: 'relative',
-      minHeight: '100vh',
-      height: 'auto',
-      background: '#F5F1ED',
-      overflow: 'hidden',
-      paddingBottom: '100px',
-    },
-    backgroundGradient: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      background: 'linear-gradient(135deg, #F5F1ED 0%, #E8DED3 50%, #F5F1ED 100%)',
-      opacity: 1,
-    },
-    meshGradient1: {
-      position: 'absolute',
-      top: '-10%',
-      right: '-10%',
-      width: '600px',
-      height: '600px',
-      background: 'radial-gradient(circle, rgba(255, 255, 255, 0.64) 0%, transparent 70%)',
-      borderRadius: '50%',
-      animation: 'meshMove1 20s ease-in-out infinite',
-      filter: 'blur(60px)',
-    },
-    meshGradient2: {
-      position: 'absolute',
-      bottom: '-10%',
-      left: '-10%',
-      width: '500px',
-      height: '500px',
-      background: 'radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 70%)',
-      borderRadius: '50%',
-      animation: 'meshMove2 25s ease-in-out infinite',
-      filter: 'blur(60px)',
-    },
-    header: {
-      position: 'relative',
-      zIndex: 100,
-      textAlign: 'center',
-      padding: '60px 20px 40px',
-    },
-    luxuryBadge: {
-      display: 'inline-block',
-      padding: '10px 30px',
-      background: 'rgba(139, 109, 75, 0.1)',
-      border: '1px solid rgba(139, 109, 75, 0.3)',
-      borderRadius: '30px',
-      fontSize: '11px',
-      letterSpacing: '3px',
-      color: '#8B6D4B',
-      marginBottom: '20px',
-      fontWeight: '600',
-      fontFamily: "'Inter', sans-serif",
-    },
-    title: {
-      fontSize: '70px',
-      fontWeight: '400',
-      color: '#300708',
-      marginBottom: '16px',
-      letterSpacing: '2px',
-      fontFamily: "'Dancing Script', cursive",
-      margin: '0 0 16px 0',
-    },
-    subtitle: {
-      fontSize: '18px',
-      color: '#8B6D4B',
-      fontWeight: '300',
-      letterSpacing: '1px',
-      fontStyle: 'italic',
-      fontFamily: "'Playfair Display', serif",
-      margin: 0,
-    },
-    floatingContainer: {
-      position: 'relative',
-      width: '100%',
-      minHeight: '190vh',
-      padding: '40px 0',
-    },
-    productFloat: {
-      position: 'absolute',
-      cursor: 'pointer',
-      transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
-      animation: 'float 8s ease-in-out infinite',
-      willChange: 'transform',
-    },
-    imageWrapper: {
-      position: 'relative',
-      width: '100%',
-      height: '100%',
-      borderRadius: '16px',
-      overflow: 'hidden',
-      boxShadow: '0 20px 60px rgba(61, 40, 23, 0.2)',
-      border: '1px solid rgba(184, 153, 110, 0.3)',
-      background: '#fff',
-    },
-    productImage: {
-      width: '100%',
-      height: '100%',
-      objectFit: 'cover',
-      transition: 'transform 0.6s ease',
-    },
-    gradientOverlay: {
-      position: 'absolute',
-      left: 0,
-      right: 0,
-      bottom: 0,
-      height: '35%',
-      background: 'linear-gradient(180deg, transparent 0%, #862c2dc8 100%)',
-      transition: 'opacity 0.4s ease',
-      pointerEvents: 'none',
-    },
-    hoverContent: {
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      padding: '20px',
-      transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-      pointerEvents: 'none',
-      color: '#fff',
-    },
-    productName: {
-      fontSize: '22px',
-      fontWeight: '400',
-      marginBottom: '8px',
-      fontFamily: "'Playfair Display', serif",
-      margin: '0 0 8px 0',
-      color: '#fff',
-    },
-    priceTag: {
-      fontSize: '26px',
-      fontWeight: '300',
-      marginBottom: '16px',
-      color: '#B8996E',
-      fontFamily: "'Playfair Display', serif",
-    },
-    exploreBtn: {
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '10px',
-      padding: '12px 28px',
-      background: 'rgba(255, 255, 255, 0.95)',
-      border: 'none',
-      borderRadius: '50px',
-      color: '#3D2817',
-      fontSize: '13px',
-      fontWeight: '600',
-      letterSpacing: '1px',
-      cursor: 'pointer',
-      transition: 'all 0.3s ease',
-      pointerEvents: 'auto',
-      fontFamily: "'Inter', sans-serif",
-    },
-  };
+const styles = {
+  container: {
+    position: 'relative',
+    minHeight: '100vh',
+    height: 'auto',
+    background: '#F5F1ED',
+    overflow: 'hidden',
+    paddingBottom: '100px',
+  },
+  backgroundGradient: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'linear-gradient(135deg, #F5F1ED 0%, #E8DED3 50%, #F5F1ED 100%)',
+    opacity: 1,
+  },
+  meshGradient1: {
+    position: 'absolute',
+    top: '-10%',
+    right: '-10%',
+    width: '600px',
+    height: '600px',
+    background: 'radial-gradient(circle, rgba(255, 255, 255, 0.64) 0%, transparent 70%)',
+    borderRadius: '50%',
+    animation: 'meshMove1 20s ease-in-out infinite',
+    filter: 'blur(60px)',
+  },
+  meshGradient2: {
+    position: 'absolute',
+    bottom: '-10%',
+    left: '-10%',
+    width: '500px',
+    height: '500px',
+    background: 'radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 70%)',
+    borderRadius: '50%',
+    animation: 'meshMove2 25s ease-in-out infinite',
+    filter: 'blur(60px)',
+  },
+  header: {
+    position: 'relative',
+    zIndex: 100,
+    textAlign: 'center',
+    padding: '60px 20px 40px',
+  },
+  luxuryBadge: {
+    display: 'inline-block',
+    padding: '10px 30px',
+    background: 'rgba(139, 109, 75, 0.1)',
+    border: '1px solid rgba(139, 109, 75, 0.3)',
+    borderRadius: '30px',
+    fontSize: '11px',
+    letterSpacing: '3px',
+    color: '#8B6D4B',
+    marginBottom: '20px',
+    fontWeight: '600',
+    fontFamily: "'Inter', sans-serif",
+  },
+  title: {
+    fontSize: '70px',
+    fontWeight: '400',
+    color: '#300708',
+    marginBottom: '16px',
+    letterSpacing: '2px',
+    fontFamily: "'Dancing Script', cursive",
+    margin: '0 0 16px 0',
+  },
+  subtitle: {
+    fontSize: '18px',
+    color: '#8B6D4B',
+    fontWeight: '300',
+    letterSpacing: '1px',
+    fontStyle: 'italic',
+    fontFamily: "'Playfair Display', serif",
+    margin: 0,
+  },
+  floatingContainer: {
+    position: 'relative',
+    width: '100%',
+    minHeight: '190vh',
+    padding: '40px 0',
+  },
+  productFloat: {
+    position: 'absolute',
+    cursor: 'pointer',
+    transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+    animation: 'float 8s ease-in-out infinite',
+    willChange: 'transform',
+  },
+  imageWrapper: {
+    position: 'relative',
+    width: '100%',
+    height: '100%',
+    borderRadius: '16px',
+    overflow: 'hidden',
+    boxShadow: '0 20px 60px rgba(61, 40, 23, 0.2)',
+    border: '1px solid rgba(184, 153, 110, 0.3)',
+    background: '#fff',
+  },
+  productImage: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    transition: 'transform 0.6s ease',
+  },
+  gradientOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: '35%',
+    background: 'linear-gradient(180deg, transparent 0%, #862c2dc8 100%)',
+    transition: 'opacity 0.4s ease',
+    pointerEvents: 'none',
+  },
+  hoverContent: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: '20px',
+    transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+    pointerEvents: 'none',
+    color: '#fff',
+  },
+  productName: {
+    fontSize: '22px',
+    fontWeight: '400',
+    marginBottom: '8px',
+    fontFamily: "'Playfair Display', serif",
+    margin: '0 0 8px 0',
+    color: '#fff',
+  },
+  priceTag: {
+    fontSize: '26px',
+    fontWeight: '300',
+    marginBottom: '16px',
+    color: '#B8996E',
+    fontFamily: "'Playfair Display', serif",
+  },
+  exploreBtn: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '10px',
+    padding: '12px 28px',
+    background: 'rgba(255, 255, 255, 0.95)',
+    border: 'none',
+    borderRadius: '50px',
+    color: '#3D2817',
+    fontSize: '13px',
+    fontWeight: '600',
+    letterSpacing: '1px',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    pointerEvents: 'auto',
+    fontFamily: "'Inter', sans-serif",
+  },
+};
 
-  // Enhanced hover effects
-  if (typeof document !== 'undefined') {
-    const style = document.createElement('style');
-    style.textContent = `
+// Enhanced hover effects
+if (typeof document !== 'undefined') {
+  const style = document.createElement('style');
+  style.textContent = `
     [style*="productFloat"]:hover [style*="productImage"] {
       transform: scale(1.1);
     }
@@ -498,7 +498,7 @@ const PremiumShowcase = () => {
       }
     }
   `;
-    document.head.appendChild(style);
-  }
+  document.head.appendChild(style);
+}
 
-  export default PremiumShowcase;
+export default PremiumShowcase;

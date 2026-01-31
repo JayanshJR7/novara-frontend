@@ -111,8 +111,8 @@ const TrendingShowcase = () => {
     };
 
     const formatPrice = (product) => {
-        const price = product.calculatedPrice || product.basePrice || 0;
-        return `₹${price.toLocaleString('en-IN')}`;
+        const price = product.finalPrice || product.basePrice || 0;
+        return `₹${price.toFixed(2).toLocaleString('en-IN')}`;
     };
 
     if (loading) {
