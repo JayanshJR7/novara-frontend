@@ -77,7 +77,9 @@ const EditProduct = () => {
         deliveryType: product.deliveryType || 'ready-to-ship',
         inStock: product.inStock !== undefined ? product.inStock : true,
         silverWeight: product.weight?.silverWeight || '',
+        netWeight: product.weight?.netWeight || '',
         grossWeight: product.weight?.grossWeight || '',
+        makingChargeRate: product.makingChargeRate || '0',
         weightUnit: product.weight?.unit || 'grams'
       });
 
@@ -163,6 +165,11 @@ const EditProduct = () => {
     }
 
     if (formData.silverWeight && parseFloat(formData.silverWeight) < 0) {
+      setError('Silver weight cannot be negative');
+      return false;
+    }
+
+    if (formData.netWeight && parseFloat(formData.netWeight) < 0) {
       setError('Net weight cannot be negative');
       return false;
     }
@@ -180,55 +187,6 @@ const EditProduct = () => {
     return true;
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setError('');
-
-  //   if (!validateForm()) {
-  //     return;
-  //   }
-
-  //   setSubmitting(true);
-
-  //   try {
-  //     const formDataToSend = new FormData();
-
-  //     formDataToSend.append('itemname', formData.itemname.trim());
-  //     formDataToSend.append('itemCode', formData.itemCode.trim().toUpperCase());
-  //     formDataToSend.append('basePrice', parseFloat(formData.basePrice).toFixed(3));
-  //     formDataToSend.append('category', formData.category);
-  //     formDataToSend.append('description', formData.description.trim());
-  //     formDataToSend.append('deliveryType', formData.deliveryType);
-  //     formDataToSend.append('inStock', formData.inStock);
-
-  //     // Add weight data with 3 decimal precision
-  //     if (formData.silverWeight || formData.grossWeight) {
-  //       formDataToSend.append('weight[silverWeight]', formData.silverWeight ? parseFloat(formData.silverWeight).toFixed(3) : '0.000');
-  //       formDataToSend.append('weight[grossWeight]', formData.grossWeight ? parseFloat(formData.grossWeight).toFixed(3) : '0.000');
-  //       formDataToSend.append('weight[unit]', formData.weightUnit);
-  //     }
-
-  //     // Only append new images if user selected any
-  //     if (imageFiles.length > 0) {
-  //       imageFiles.forEach(file => {
-  //         formDataToSend.append('itemImages', file);
-  //       });
-  //     }
-
-  //     await productsAPI.updateProduct(id, formDataToSend);
-
-  //     toast.success('✅ Product updated successfully!');
-  //     navigate('/admin');
-
-  //   } catch (err) {
-  //     console.error('Update product error:', err);
-  //     const errorMessage = err.response?.data?.message || 'Failed to update product';
-  //     setError(errorMessage);
-  //     toast.error(errorMessage);
-  //   } finally {
-  //     setSubmitting(false);
-  //   }
-  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -237,7 +195,7 @@ const EditProduct = () => {
       return;
     }
 
-    setLoading(true);
+    setSubmitting(true);
 
     try {
       const formDataToSend = new FormData();
@@ -248,8 +206,9 @@ const EditProduct = () => {
       formDataToSend.append('category', formData.category);
       formDataToSend.append('description', formData.description.trim());
       formDataToSend.append('deliveryType', formData.deliveryType);
+      formDataToSend.append('inStock', formData.inStock);
 
-      // ✅ UPDATED: Include all three weights
+      // ✅ Include all three weights
       if (formData.silverWeight || formData.netWeight || formData.grossWeight) {
         formDataToSend.append('weight[silverWeight]', formData.silverWeight ? parseFloat(formData.silverWeight).toFixed(3) : '0.000');
         formDataToSend.append('weight[netWeight]', formData.netWeight ? parseFloat(formData.netWeight).toFixed(3) : '0.000');
@@ -257,26 +216,30 @@ const EditProduct = () => {
         formDataToSend.append('weight[unit]', formData.weightUnit);
       }
 
-      // ✅ CHANGED: Send makingChargeRate instead of makingCharge
+      // ✅ Send makingChargeRate
       if (formData.makingChargeRate) {
         formDataToSend.append('makingChargeRate', parseFloat(formData.makingChargeRate).toFixed(3));
       }
 
-      imageFiles.forEach(file => {
-        formDataToSend.append('itemImages', file);
-      });
+      // Only append new images if user selected any
+      if (imageFiles.length > 0) {
+        imageFiles.forEach(file => {
+          formDataToSend.append('itemImages', file);
+        });
+      }
 
-      await productsAPI.createProduct(formDataToSend);
-      toast.success('✅ Product added successfully!');
+      // ✅ FIX: Use UPDATE API, not CREATE!
+      await productsAPI.updateProduct(id, formDataToSend);
+      toast.success('✅ Product updated successfully!');
       navigate('/admin');
 
     } catch (err) {
-      console.error('Add product error:', err);
-      const errorMessage = err.response?.data?.message || 'Failed to add product';
+      console.error('Update product error:', err);
+      const errorMessage = err.response?.data?.message || 'Failed to update product';
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 
@@ -551,29 +514,6 @@ const EditProduct = () => {
           </div>
 
           {/* Pricing Information */}
-          {/* <div className="form-section">
-            <h3>Pricing Information</h3>
-
-            <div className="form-row">
-              <div className="form-group">
-                <label>Product Price (₹) *</label>
-                <input
-                  type="number"
-                  name="basePrice"
-                  value={formData.basePrice}
-                  onChange={handleChange}
-                  placeholder="10000.000"
-                  min="0"
-                  step="0.001"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="pricing-note">
-              <p>💡 Final Price (after 10% discount) = ₹{formData.basePrice ? (formData.basePrice * 0.9).toFixed(3) : '0.000'}</p>
-            </div>
-          </div> */}
           <div className="form-section">
             <h3>Pricing Information</h3>
 

@@ -19,6 +19,9 @@ import {
     FiXCircle,
     FiImage,
     FiUpload,
+    FiSearch,
+    FiChevronLeft,
+    FiChevronRight,
 } from 'react-icons/fi';
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -42,6 +45,12 @@ const AdminDashboard = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    // Search and Pagination States
+    const [searchQuery, setSearchQuery] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(10);
+    const [sortBy, setSortBy] = useState('newest'); // newest, oldest, name-asc, name-desc, price-asc, price-desc
+
     //carousel state
     const [carouselSlides, setCarouselSlides] = useState([]);
     const [showCarouselModal, setShowCarouselModal] = useState(false);
@@ -54,7 +63,7 @@ const AdminDashboard = () => {
     });
     const [uploadingSlide, setUploadingSlide] = useState(false);
 
-    //coupn states
+    //coupon states
     const [coupons, setCoupons] = useState([]);
     const [showCouponModal, setShowCouponModal] = useState(false);
     const [editingCoupon, setEditingCoupon] = useState(null);
@@ -108,6 +117,7 @@ const AdminDashboard = () => {
         }
         return '₹' + num.toFixed(2);
     };
+
     useEffect(() => {
         if (!isAdmin) {
             navigate('/');
@@ -116,6 +126,11 @@ const AdminDashboard = () => {
         fetchDashboardData();
         fetchCurrentSilverPrice();
     }, [isAdmin, navigate]);
+
+    // Reset to page 1 when search query changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, sortBy]);
 
     const fetchDashboardData = async () => {
         try {
@@ -196,6 +211,64 @@ const AdminDashboard = () => {
         }
     };
 
+    // Filter and Sort Products
+    const getFilteredAndSortedProducts = () => {
+        let filtered = [...products];
+
+        // Apply search filter
+        if (searchQuery.trim()) {
+            const query = searchQuery.toLowerCase();
+            filtered = filtered.filter(product =>
+                product.itemname?.toLowerCase().includes(query) ||
+                product.itemCode?.toLowerCase().includes(query) ||
+                product.category?.toLowerCase().includes(query)
+            );
+        }
+
+        // Apply sorting
+        switch (sortBy) {
+            case 'newest':
+                filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                break;
+            case 'oldest':
+                filtered.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+                break;
+            case 'name-asc':
+                filtered.sort((a, b) => a.itemname.localeCompare(b.itemname));
+                break;
+            case 'name-desc':
+                filtered.sort((a, b) => b.itemname.localeCompare(a.itemname));
+                break;
+            case 'price-asc':
+                filtered.sort((a, b) => (a.finalPrice || 0) - (b.finalPrice || 0));
+                break;
+            case 'price-desc':
+                filtered.sort((a, b) => (b.finalPrice || 0) - (a.finalPrice || 0));
+                break;
+            default:
+                break;
+        }
+
+        return filtered;
+    };
+
+    // Pagination Logic
+    const getPaginatedProducts = () => {
+        const filteredProducts = getFilteredAndSortedProducts();
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        return {
+            products: filteredProducts.slice(startIndex, endIndex),
+            totalProducts: filteredProducts.length,
+            totalPages: Math.ceil(filteredProducts.length / itemsPerPage)
+        };
+    };
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
     // ============== SILVER PRICE FUNCTIONS ==============
     const fetchCurrentSilverPrice = async () => {
         try {
@@ -239,6 +312,7 @@ const AdminDashboard = () => {
             setFetchingSilverPrice(false);
         }
     };
+
     const fetchCarouselSlides = async () => {
         try {
             const response = await carouselAPI.getAll();
@@ -248,8 +322,6 @@ const AdminDashboard = () => {
             setCarouselSlides([]);
         }
     };
-
-
 
     const handleDeleteProduct = async (id) => {
         if (!window.confirm('Are you sure you want to delete this product?')) {
@@ -550,7 +622,6 @@ const AdminDashboard = () => {
         }
     };
 
-
     const closeCarouselModal = () => {
         setShowCarouselModal(false);
         setEditingSlide(null);
@@ -657,6 +728,7 @@ const AdminDashboard = () => {
             toast.error(error.response?.data?.message || 'Failed to delete category');
         }
     };
+
     const handleApproveReview = async (id) => {
         try {
             await reviewsAPI.approve(id);
@@ -710,7 +782,6 @@ const AdminDashboard = () => {
         setSelectedReview(null);
     };
 
-
     if (loading) {
         return (
             <div style={{
@@ -726,6 +797,8 @@ const AdminDashboard = () => {
             </div>
         );
     }
+
+    const { products: paginatedProducts, totalProducts, totalPages } = getPaginatedProducts();
 
     return (
         <div className="admin-dashboard-new">
@@ -887,6 +960,55 @@ const AdminDashboard = () => {
                                 </button>
                             </div>
 
+                            {/* Search and Filter Bar */}
+                            <div className="search-filter-bar">
+                                <div className="search-box">
+                                    <FiSearch className="search-icon" />
+                                    <input
+                                        type="text"
+                                        placeholder="Search by name, code, or category..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="search-input"
+                                    />
+                                    {searchQuery && (
+                                        <button
+                                            className="clear-search"
+                                            onClick={() => setSearchQuery('')}
+                                            aria-label="Clear search"
+                                        >
+                                            <FiX />
+                                        </button>
+                                    )}
+                                </div>
+
+                                <div className="sort-box">
+                                    <label htmlFor="sort-select">Sort by:</label>
+                                    <select
+                                        id="sort-select"
+                                        value={sortBy}
+                                        onChange={(e) => setSortBy(e.target.value)}
+                                        className="sort-select"
+                                    >
+                                        <option value="newest">Newest First</option>
+                                        <option value="oldest">Oldest First</option>
+                                        <option value="name-asc">Name (A-Z)</option>
+                                        <option value="name-desc">Name (Z-A)</option>
+                                        <option value="price-asc">Price (Low to High)</option>
+                                        <option value="price-desc">Price (High to Low)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            {/* Results Info */}
+                            <div className="results-info">
+                                <p>
+                                    Showing <strong>{paginatedProducts.length}</strong> of{' '}
+                                    <strong>{totalProducts}</strong> products
+                                    {searchQuery && ` for "${searchQuery}"`}
+                                </p>
+                            </div>
+
                             <div className="products-table-new">
                                 <table>
                                     <thead>
@@ -902,69 +1024,137 @@ const AdminDashboard = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {products.map((product) => (
-                                            <tr key={product._id}>
-                                                <td>
-                                                    <img
-                                                        src={product.itemImages?.[0] || product.itemImage}
-                                                        alt={product.itemname}
-                                                        className="product-thumb-new"
-                                                    />
-                                                </td>
-                                                <td>{product.itemname}</td>
-                                                <td>{product.itemCode}</td>
-                                                <td>
-                                                    {product.weight?.silverWeight > 0 ? (
-                                                        <span style={{ fontSize: '13px', color: '#666' }}>
-                                                            {product.weight.silverWeight} {product.weight.unit}
+                                        {paginatedProducts.length > 0 ? (
+                                            paginatedProducts.map((product) => (
+                                                <tr key={product._id}>
+                                                    <td>
+                                                        <img
+                                                            src={product.itemImages?.[0] || product.itemImage}
+                                                            alt={product.itemname}
+                                                            className="product-thumb-new"
+                                                        />
+                                                    </td>
+                                                    <td>{product.itemname}</td>
+                                                    <td>{product.itemCode}</td>
+                                                    <td>
+                                                        {product.weight?.silverWeight > 0 ? (
+                                                            <span style={{ fontSize: '13px', color: '#666' }}>
+                                                                {product.weight.silverWeight} {product.weight.unit}
+                                                            </span>
+                                                        ) : (
+                                                            <span style={{ fontSize: '13px', color: '#ccc' }}>N/A</span>
+                                                        )}
+                                                    </td>
+                                                    <td>
+                                                        <span className={`delivery-type-badge ${product.deliveryType === 'ready-to-ship' ? 'ready-ship' : 'made-order'}`}>
+                                                            {product.deliveryType === 'ready-to-ship' ? '🚚 5-7 Days' : '⏱️ 20-25 Days'}
                                                         </span>
-                                                    ) : (
-                                                        <span style={{ fontSize: '13px', color: '#ccc' }}>N/A</span>
-                                                    )}
-                                                </td>
-                                                <td>
-                                                    <span className={`delivery-type-badge ${product.deliveryType === 'ready-to-ship' ? 'ready-ship' : 'made-order'}`}>
-                                                        {product.deliveryType === 'ready-to-ship' ? '🚚 5-7 Days' : '⏱️ 20-25 Days'}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                                        <span style={{ textDecoration: 'line-through', color: '#999', fontSize: '14px' }}>
-                                                            ₹{product.basePrice?.toFixed(2)}
+                                                    </td>
+                                                    <td>
+                                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                                            <span style={{ textDecoration: 'line-through', color: '#999', fontSize: '14px' }}>
+                                                                ₹{product.basePrice?.toFixed(2)}
+                                                            </span>
+                                                            <span style={{ fontWeight: '600', color: '#300708' }}>
+                                                                ₹{product.finalPrice?.toFixed(2)}
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span className={`stock-badge-new ${product.inStock ? 'in-stock' : 'out-stock'}`}>
+                                                            {product.inStock ? 'In Stock' : 'Out of Stock'}
                                                         </span>
-                                                        <span style={{ fontWeight: '600', color: '#300708' }}>
-                                                            ₹{product.finalPrice?.toFixed(2)}
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <span className={`stock-badge-new ${product.inStock ? 'in-stock' : 'out-stock'}`}>
-                                                        {product.inStock ? 'In Stock' : 'Out of Stock'}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <div className="action-buttons-new">
-                                                        <button
-                                                            className="btn-edit-new"
-                                                            onClick={() => navigate(`/admin/edit-product/${product._id}`)}
-                                                            title="Edit Product"
-                                                        >
-                                                            <FiEdit />
-                                                        </button>
-                                                        <button
-                                                            className="btn-delete-new"
-                                                            onClick={() => handleDeleteProduct(product._id)}
-                                                            title="Delete Product"
-                                                        >
-                                                            <FiTrash2 />
-                                                        </button>
+                                                    </td>
+                                                    <td>
+                                                        <div className="action-buttons-new">
+                                                            <button
+                                                                className="btn-edit-new"
+                                                                onClick={() => navigate(`/admin/edit-product/${product._id}`)}
+                                                                title="Edit Product"
+                                                            >
+                                                                <FiEdit />
+                                                            </button>
+                                                            <button
+                                                                className="btn-delete-new"
+                                                                onClick={() => handleDeleteProduct(product._id)}
+                                                                title="Delete Product"
+                                                            >
+                                                                <FiTrash2 />
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td colSpan="8" className="no-results">
+                                                    <div className="empty-state">
+                                                        <FiSearch size={48} style={{ color: '#ccc' }} />
+                                                        <p>No products found{searchQuery && ` for "${searchQuery}"`}</p>
+                                                        {searchQuery && (
+                                                            <button
+                                                                className="btn-clear-search"
+                                                                onClick={() => setSearchQuery('')}
+                                                            >
+                                                                Clear Search
+                                                            </button>
+                                                        )}
                                                     </div>
                                                 </td>
                                             </tr>
-                                        ))}
+                                        )}
                                     </tbody>
                                 </table>
                             </div>
+
+                            {/* Pagination */}
+                            {totalPages > 1 && (
+                                <div className="pagination-container">
+                                    <button
+                                        className="pagination-btn"
+                                        onClick={() => handlePageChange(currentPage - 1)}
+                                        disabled={currentPage === 1}
+                                    >
+                                        <FiChevronLeft /> Previous
+                                    </button>
+
+                                    <div className="pagination-numbers">
+                                        {[...Array(totalPages)].map((_, index) => {
+                                            const pageNumber = index + 1;
+                                            // Show first page, last page, current page, and pages around current
+                                            if (
+                                                pageNumber === 1 ||
+                                                pageNumber === totalPages ||
+                                                (pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1)
+                                            ) {
+                                                return (
+                                                    <button
+                                                        key={pageNumber}
+                                                        className={`pagination-number ${currentPage === pageNumber ? 'active' : ''}`}
+                                                        onClick={() => handlePageChange(pageNumber)}
+                                                    >
+                                                        {pageNumber}
+                                                    </button>
+                                                );
+                                            } else if (
+                                                pageNumber === currentPage - 2 ||
+                                                pageNumber === currentPage + 2
+                                            ) {
+                                                return <span key={pageNumber} className="pagination-ellipsis">...</span>;
+                                            }
+                                            return null;
+                                        })}
+                                    </div>
+
+                                    <button
+                                        className="pagination-btn"
+                                        onClick={() => handlePageChange(currentPage + 1)}
+                                        disabled={currentPage === totalPages}
+                                    >
+                                        Next <FiChevronRight />
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     )}
 
@@ -1416,6 +1606,7 @@ const AdminDashboard = () => {
                             )}
                         </div>
                     )}
+
                     {activeTab === 'silver' && (
                         <div className="silver-section-new">
                             <h2>Silver Price Management</h2>
@@ -1499,6 +1690,7 @@ const AdminDashboard = () => {
                 </div>
             </div>
 
+            {/* All modals remain the same... */}
             {/* Order Details Modal */}
             {showOrderModal && selectedOrder && (
                 <div className="modal-overlay-new" onClick={closeOrderModal}>
@@ -1513,7 +1705,7 @@ const AdminDashboard = () => {
                         <div className="modal-body-new">
                             <div className="order-info-section">
                                 <h3>Order Information</h3>
-                                <p><strong>Order ID:</strong>{selectedOrder._id.slice(-6)}</p>
+                                <p><strong>Order ID:</strong> #{selectedOrder._id.slice(-6)}</p>
                                 <p><strong>Customer:</strong> {selectedOrder.customerName}</p>
                                 <p><strong>Email:</strong> {selectedOrder.email}</p>
                                 <p><strong>Phone:</strong> {selectedOrder.phone}</p>
@@ -1548,16 +1740,17 @@ const AdminDashboard = () => {
                                     </div>
                                 </div>
                             </div>
+
                             <div className="order-info-section">
                                 <h3>Payment Summary</h3>
                                 <div className="payment-summary">
-                                    <p><strong>Amount paid:</strong>₹{selectedOrder.paymentInfo.amount_paid}</p>
-                                    <p><strong>Payment platform (method):</strong>{selectedOrder.paymentMethod}</p>
-                                    <p><strong>Razorpay Order ID:</strong>{selectedOrder.paymentInfo.razorpay_order_id}</p>
-                                    <p><strong>Razorpay Payment ID:</strong>{selectedOrder.paymentInfo.razorpay_payment_id}</p>
+                                    <p><strong>Amount paid:</strong> ₹{selectedOrder.paymentInfo.amount_paid}</p>
+                                    <p><strong>Payment platform (method):</strong> {selectedOrder.paymentMethod}</p>
+                                    <p><strong>Razorpay Order ID:</strong> {selectedOrder.paymentInfo.razorpay_order_id}</p>
+                                    <p><strong>Razorpay Payment ID:</strong> {selectedOrder.paymentInfo.razorpay_payment_id}</p>
                                     <p><strong>Razorpay Signature -</strong></p>
                                     <p style={{ overflowX: 'scroll' }}>{selectedOrder.paymentInfo.razorpay_signature}</p>
-                                    <p><strong>Payment Method:</strong>{selectedOrder.paymentInfo.payment_method}</p>
+                                    <p><strong>Payment Method:</strong> {selectedOrder.paymentInfo.payment_method}</p>
                                     <p>
                                         <strong>Payment Date:</strong>{" "}
                                         {new Date(selectedOrder.paymentInfo.payment_date).toLocaleString(
@@ -1593,6 +1786,7 @@ const AdminDashboard = () => {
                                     ))}
                                 </div>
                             </div>
+
                             <div className="order-info-section">
                                 <h3>Payment Summary</h3>
                                 <div className="payment-summary">
@@ -1656,6 +1850,7 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             )}
+
             {/* Carousel Slide Modal */}
             {showCarouselModal && (
                 <div className="modal-overlay-new" onClick={closeCarouselModal}>
@@ -1737,6 +1932,7 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             )}
+
             {/* Coupon Modal */}
             {showCouponModal && (
                 <div className="modal-overlay-new" onClick={() => setShowCouponModal(false)}>
@@ -1847,6 +2043,7 @@ const AdminDashboard = () => {
                                 />
                             </div>
                         </div>
+
                         <div className="modal-actions-carousel">
                             <button
                                 className="btn-cancel-carousel"
@@ -1864,6 +2061,7 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             )}
+
             {/* Category Modal */}
             {showCategoryModal && (
                 <div className="modal-overlay-new" onClick={() => setShowCategoryModal(false)}>
@@ -1959,6 +2157,8 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             )}
+
+            {/* Review Modal */}
             {showReviewModal && selectedReview && (
                 <div className="modal-overlay-new" onClick={closeReviewModal}>
                     <div className="modal-content-new" onClick={(e) => e.stopPropagation()}>

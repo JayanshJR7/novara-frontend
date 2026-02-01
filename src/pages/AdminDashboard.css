@@ -177,6 +177,221 @@
     font-size: 1.8rem;
 }
 
+/* Search and Filter Bar */
+.search-filter-bar {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.search-box {
+    flex: 1;
+    min-width: 280px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    color: #666;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 45px 12px 45px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1rem;
+    color: #300708;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #300708;
+    box-shadow: 0 0 0 3px rgba(48, 7, 8, 0.1);
+}
+
+.clear-search {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.clear-search:hover {
+    background: rgba(48, 7, 8, 0.1);
+    color: #300708;
+}
+
+.sort-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sort-box label {
+    font-weight: 600;
+    color: #300708;
+    white-space: nowrap;
+}
+
+.sort-select {
+    padding: 10px 35px 10px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    color: #300708;
+    background-color: white;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23300708' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+}
+
+.sort-select:focus {
+    outline: none;
+    border-color: #300708;
+    box-shadow: 0 0 0 3px rgba(48, 7, 8, 0.1);
+}
+
+.results-info {
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    background: rgba(48, 7, 8, 0.05);
+    border-radius: 8px;
+    border-left: 4px solid #300708;
+}
+
+.results-info p {
+    margin: 0;
+    color: #300708;
+    font-size: 0.95rem;
+}
+
+.results-info strong {
+    font-weight: 700;
+    color: #300708;
+}
+
+.no-results {
+    text-align: center;
+    padding: 0 !important;
+}
+
+.btn-clear-search {
+    margin-top: 15px;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #300708 0%, #5a0e10 100%);
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-clear-search:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(48, 7, 8, 0.3);
+}
+
+/* Pagination Styles */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 30px;
+    padding: 20px 0;
+    flex-wrap: wrap;
+}
+
+.pagination-btn {
+    padding: 10px 20px;
+    border: 2px solid #e0e0e0;
+    background: white;
+    color: #300708;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    border-color: #300708;
+    background: rgba(48, 7, 8, 0.05);
+    transform: translateY(-2px);
+}
+
+.pagination-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.pagination-numbers {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.pagination-number {
+    min-width: 40px;
+    height: 40px;
+    padding: 8px 12px;
+    border: 2px solid #e0e0e0;
+    background: white;
+    color: #300708;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagination-number:hover {
+    border-color: #300708;
+    background: rgba(48, 7, 8, 0.05);
+}
+
+.pagination-number.active {
+    background: linear-gradient(135deg, #300708 0%, #5a0e10 100%);
+    color: white;
+    border-color: #300708;
+}
+
+.pagination-ellipsis {
+    padding: 0 8px;
+    color: #666;
+    font-weight: 600;
+}
+
 .section-header-new {
     display: flex;
     justify-content: space-between;
@@ -745,8 +960,6 @@
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
-/* Add these styles to your existing AdminDashboard.css file */
-
 /* Carousel Section Styles */
 .carousel-section-new {
     padding: 2rem 0;
@@ -1026,7 +1239,6 @@
     transform: none;
 }
 
-
 .revenue-chart-section {
     background: white;
     padding: 20px;
@@ -1099,7 +1311,6 @@
     border-collapse: separate;
     border-spacing: 0;
     min-width: 900px;
-    /* keeps alignment intact */
 }
 
 /* HEADER */
@@ -1331,7 +1542,6 @@
     border-collapse: separate;
     border-spacing: 0;
     min-width: 1200px;
-    /* ensures proper layout on smaller screens */
 }
 
 .reviews-table-new thead tr {
@@ -1364,84 +1574,337 @@
     background-color: #f9fafb;
 }
 
-/* Align action columns to center */
 .reviews-table-new th:last-child,
 .reviews-table-new td:last-child {
     text-align: center;
 }
 
-/* Responsive Styles */
-@media (max-width: 768px) {
-    .carousel-grid-new {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
+/* Responsive Styles - MOBILE FIRST */
+@media (max-width: 480px) {
+    .admin-dashboard-new {
+        margin-top: 4rem;
     }
 
-    .carousel-modal-content {
-        width: 95%;
-        max-height: 95vh;
-    }
-
-    .carousel-modal-header,
-    .carousel-modal-body,
-    .modal-actions-carousel {
-        padding: 1.25rem 1.5rem;
-    }
-
-    .slide-info h3 {
-        font-size: 1.1rem;
-    }
-
-    .slide-info p {
-        font-size: 0.9rem;
-    }
-}
-
-@media (max-width: 768px) {
     .dashboard-header-new h1 {
-        font-size: 2rem;
+        font-size: 1.8rem;
+    }
+
+    .dashboard-header-new p {
+        font-size: 1rem;
     }
 
     .stats-grid-new {
         grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .stat-card-new {
+        padding: 20px;
+    }
+
+    .stat-icon-new {
+        width: 50px;
+        height: 50px;
+    }
+
+    .stat-value-new {
+        font-size: 1.6rem;
+    }
+
+    .dashboard-tabs-new {
+        gap: 5px;
+        padding-bottom: 10px;
+    }
+
+    .tab-new {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
+
+    .tab-content-new {
+        padding: 20px 15px;
     }
 
     .quick-actions-new {
         grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .action-btn-new {
+        padding: 14px 20px;
+        font-size: 0.95rem;
+    }
+
+    /* Search and Filter Bar - Mobile */
+    .search-filter-bar {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .search-box {
+        min-width: 100%;
+    }
+
+    .search-input {
+        font-size: 0.95rem;
+        padding: 12px 40px 12px 40px;
+    }
+
+    .sort-box {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .sort-box label {
+        font-size: 0.9rem;
+    }
+
+    .sort-select {
+        width: 100%;
+        padding: 10px 35px 10px 12px;
+        font-size: 0.9rem;
+    }
+
+    .results-info {
+        padding: 10px 12px;
+    }
+
+    .results-info p {
+        font-size: 0.85rem;
+    }
+
+    /* Pagination - Mobile */
+    .pagination-container {
+        gap: 6px;
+        padding: 15px 0;
+    }
+
+    .pagination-btn {
+        padding: 8px 14px;
+        font-size: 0.85rem;
+    }
+
+    .pagination-numbers {
+        gap: 5px;
+    }
+
+    .pagination-number {
+        min-width: 35px;
+        height: 35px;
+        padding: 6px 8px;
+        font-size: 0.85rem;
     }
 
     .section-header-new {
         flex-direction: column;
         gap: 15px;
-        align-items: flex-start;
+        align-items: stretch;
+    }
+
+    .section-header-new h2 {
+        font-size: 1.5rem;
+    }
+
+    .btn-add-new {
+        width: 100%;
+        justify-content: center;
     }
 
     .products-table-new,
-    .orders-table-new {
-        font-size: 0.85rem;
+    .orders-table-new,
+    .coupons-table-new,
+    .categories-table-new,
+    .reviews-table-new {
+        font-size: 0.8rem;
     }
 
-    .modal-content-new {
-        margin: 10px;
+    .products-table-new th,
+    .products-table-new td,
+    .orders-table-new th,
+    .orders-table-new td,
+    .coupons-table-new th,
+    .coupons-table-new td,
+    .categories-table-new th,
+    .categories-table-new td,
+    .reviews-table-new th,
+    .reviews-table-new td {
+        padding: 10px 8px;
+        font-size: 0.8rem;
+    }
+
+    .product-thumb-new {
+        width: 50px;
+        height: 50px;
+    }
+
+    .action-buttons-new {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .action-buttons-new button {
+        width: 30px;
+        height: 30px;
+    }
+
+    .carousel-grid-new {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .slide-image-wrapper {
+        height: 180px;
+    }
+
+    .modal-overlay-new {
+        padding: 10px;
+    }
+
+    .modal-content-new,
+    .carousel-modal-content {
+        width: 100%;
+        max-height: 95vh;
+    }
+
+    .modal-header-new,
+    .carousel-modal-header {
+        padding: 20px 15px;
+    }
+
+    .modal-header-new h2,
+    .carousel-modal-header h2 {
+        font-size: 1.4rem;
+    }
+
+    .modal-body-new,
+    .carousel-modal-body {
+        padding: 20px 15px;
+    }
+
+    .modal-actions,
+    .modal-actions-carousel {
+        flex-direction: column;
+        padding: 15px;
+    }
+
+    .btn-modal-confirm,
+    .btn-modal-cancel,
+    .btn-modal-process,
+    .btn-cancel-carousel,
+    .btn-save-carousel {
+        width: 100%;
+        min-width: auto;
     }
 
     .order-item-row {
         flex-direction: column;
         text-align: center;
+        padding: 12px;
     }
 
-    .delivery-charge-update {
+    .item-image-modal {
+        width: 100%;
+        max-width: 200px;
+        height: auto;
+    }
+
+    .delivery-charge-update,
+    .price-input-group-new {
         flex-direction: column;
+    }
+
+    .silver-card-new {
+        padding: 20px;
+    }
+
+    .price-display-new {
+        font-size: 2rem;
+    }
+}
+
+/* Tablet Styles */
+@media (min-width: 481px) and (max-width: 768px) {
+    .dashboard-header-new h1 {
+        font-size: 2.2rem;
+    }
+
+    .stats-grid-new {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .quick-actions-new {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .search-filter-bar {
+        flex-wrap: nowrap;
+    }
+
+    .search-box {
+        min-width: 200px;
+    }
+
+    .carousel-grid-new {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .pagination-container {
+        gap: 8px;
+    }
+
+    .section-header-new {
+        flex-direction: row;
+    }
+
+    .products-table-new,
+    .orders-table-new,
+    .coupons-table-new,
+    .categories-table-new,
+    .reviews-table-new {
+        font-size: 0.85rem;
     }
 
     .modal-actions {
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: wrap;
     }
 
     .btn-modal-confirm,
     .btn-modal-cancel,
     .btn-modal-process {
-        width: 100%;
+        flex: 1 1 45%;
+    }
+}
+
+/* Desktop Styles */
+@media (min-width: 769px) {
+    .search-filter-bar {
+        flex-wrap: nowrap;
+    }
+
+    .carousel-grid-new {
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    }
+
+    .stats-grid-new {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Large Desktop */
+@media (min-width: 1200px) {
+    .admin-dashboard-new .container {
+        max-width: 1400px;
+    }
+
+    .dashboard-header-new h1 {
+        font-size: 2.8rem;
+    }
+
+    .carousel-grid-new {
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
