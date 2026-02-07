@@ -92,7 +92,7 @@ const ProductCard = ({ product }) => {
   }
 
   const displayPrice = product.finalPrice || product.basePrice || 0;
-  const originalPrice = product.basePrice || 0;
+  const originalPrice = displayPrice / 0.9;
   const inWishlist = isInWishlist(product._id);
 
   return (
